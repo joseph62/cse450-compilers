@@ -15,7 +15,7 @@ def chemical_check(input_string):
 
 # Question 2
 
-tokens = ('NOUN','VERB','PUNCTUATION','UNKOWN')
+tokens = ('NOUN','VERB','PUNCTUATION','UNKNOWN','WHITESPACE')
 
 def t_PUNCTUATION(t):
     r'!'
@@ -29,7 +29,7 @@ def t_VERB(t):
     r'(is|chases|loves)'
     return t
 
-def t_UNKOWN(t):
+def t_UNKNOWN(t):
     r'[a-zA-Z0-9]+'
     return t
 
@@ -45,6 +45,5 @@ while True:
     tok = lexer.token()
     if not tok:
         break # all done
-    dir(tok)
-    print(tok.value,tok.type)
+    print("{} ({})".format(tok.type,tok.value))
             
