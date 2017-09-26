@@ -1,0 +1,47 @@
+val test_num = (3 * (7.2 + 12.1)) / 42;  # This is my comment.
+# The next line intentionally left blank!;
+
+val this_is_1 = 0; # Value is 0
+this_is_1 += 1; # Value is 1 now!
+this_is_1 *= 4; # Value is 4 now!
+# Value is now 2!
+this_is_1 -= 2;
+# Value is now 1!
+this_is_1 /= 2;
+
+char c_boi = 'c';
+
+char random_boi = random;
+
+string string_boi = "";
+
+string bigger_string_boi = "I am a string boi";
+
+string_boi += c_boi + random_boi;
+
+val leading_dot_boi = 
+		.00000000000000000000001;
+
+if(string_boi != bigger_string_boi)
+{
+	print string_boi;
+	print bigger_string_boi;
+}
+elseif(string_boi == bigger_string_boi)
+{
+	print "lel, they're the same string, bro!";
+}
+elseif(string_boi > bigger_string_boi) { }
+elseif(string_boi < bigger_string_boi) { }
+elseif(string_boi <= bigger_string_boi) { }
+elseif(string_boi >= bigger_string_boi) { }
+
+bool wut = (string_boi == "wut do you think this is? a language with booleans?");
+wut = (string_boi == "I'm sure booleans will ");
+
+if(wut && wut) { }
+elseif(wut || wut) { }
+
+val list_boi_maybe = [1,2,3,4,5,6];
+
+print test_num;
