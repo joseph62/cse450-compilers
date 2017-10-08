@@ -1,0 +1,5 @@
+declare x
+declare y
+use x
+use y
+use x
