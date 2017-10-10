@@ -1,7 +1,7 @@
 # Name: Sean Joseph
 # SymbolTable class handles scopes and variable declares.
 
-from variable import ValueVariable,CharVariable
+from variable import ValVariable,CharVariable
 
 class Table:
     """

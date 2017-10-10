@@ -1,0 +1,67 @@
+Created by PLY version 3.10 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    TYPE
+    COMP_LTE
+    COMMENT
+    BOOL_AND
+    ASSIGN_SUB
+    COMMAND_PRINT
+    COMP_GTR
+    COMP_LESS
+    ID
+    COMP_EQU
+    ASSIGN_MULT
+    ASSIGN_DIV
+    ASSIGN_ADD
+    WHITESPACE
+    COMMAND_RANDOM
+    COMP_GTE
+    COMP_NEQU
+    BOOL_OR
+    CHAR_LITERAL
+    STRING_LITERAL
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> statements
+Rule 2     statements -> <empty>
+Rule 3     statements -> statements statement
+Rule 4     statement -> expression ;
+Rule 5     expression -> VAL_LITERAL
+
+Terminals, with rules where they appear
+
+;                    : 4
+ASSIGN_ADD           : 
+ASSIGN_DIV           : 
+ASSIGN_MULT          : 
+ASSIGN_SUB           : 
+BOOL_AND             : 
+BOOL_OR              : 
+CHAR_LITERAL         : 
+COMMAND_PRINT        : 
+COMMAND_RANDOM       : 
+COMMENT              : 
+COMP_EQU             : 
+COMP_GTE             : 
+COMP_GTR             : 
+COMP_LESS            : 
+COMP_LTE             : 
+COMP_NEQU            : 
+ID                   : 
+STRING_LITERAL       : 
+TYPE                 : 
+VAL_LITERAL          : 5
+WHITESPACE           : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+expression           : 4
+program              : 0
+statement            : 3
+statements           : 1 3
+

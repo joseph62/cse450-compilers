@@ -15,7 +15,12 @@ class Node:
         self.data = data
         self.name = name
 
-    def generate_bad_code(output):
+    def generate_tree(self,prefix):
+        print("{}{}".format(self.name,prefix))
+        for child in self.children:
+            child.generate_tree("."+prefix)
+
+    def generate_bad_code(self,output):
         raise NotImplementedError()
 
 class ValLiteralNode(Node):
