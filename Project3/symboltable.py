@@ -15,7 +15,7 @@ class Table:
     def __contains__(self,name):
         return name in self._variables
 
-    def define_variable(self,var):
+    def declare_variable(self,var):
         self._variables[var.get_name()] = var
 
     def deref_variable(self,name):
@@ -27,17 +27,23 @@ class SymbolTable:
         self._tables = [Table()]
         self._scope = 0
 
-    def define_variable(self,var):
+    def declare_variable(self,var):
         if var.get_name() in self._tables[-1]:
-            raise NameError("Variable {} is already defined in scope {}!"
+            raise NameError("Variable {} is already declared in scope {}!"
                     .format(var.get_name(),self._scope))
         var.set_scope(self._scope)
-        self._tables[-1].define_variable(var)
+        self._tables[-1].declare_variable(var)
 
     def deref_variable(self,name):
         for table in reversed(self._tables):
             if name in table:
                 return table.deref_variable(name) 
+        raise NameError("Variable {} used before declaration!".format(name))
+
+    def set_variable(self,name,value):
+        for table in reversed(self._tables):
+            if name in table:
+                table.set_variable(name,value)
         raise NameError("Variable {} used before declaration!".format(name))
 
     def add_scope(self):
@@ -55,7 +61,7 @@ if __name__ == '__main__':
     init_variable = ValueVariable('x')
     init_variable.set_value('s1')
 
-    table.define_variable(init_variable)
+    table.declare_variable(init_variable)
     variable = table.deref_variable('x')
     print("{} -> {}".format(variable.get_name(),variable.get_value()))
 
@@ -63,7 +69,7 @@ if __name__ == '__main__':
 
     init_variable = ValueVariable('x')
     init_variable.set_value('s2')
-    table.define_variable(init_variable)
+    table.declare_variable(init_variable)
 
     variable = table.deref_variable('x')
     print("{} -> {}".format(variable.get_name(),variable.get_value()))
