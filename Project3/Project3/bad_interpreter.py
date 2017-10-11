@@ -14,6 +14,8 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 
+DEBUG_MODE = False
+
 SYMBOL_TABLE = {}
 INSTRUCTIONS = []
 SCALAR_STACK = []
@@ -255,13 +257,13 @@ def p_jump(p):
 
 def p_jump_if_0(p):
     """
-    statement : JUMP_IF_0 value
+    statement : JUMP_IF_0 value value
     """
     p[0] = p[1:]
 
 def p_jump_if_n0(p):
     """
-    statement : JUMP_IF_N0 value
+    statement : JUMP_IF_N0 value value
     """
     p[0] = p[1:]
 
@@ -413,6 +415,8 @@ def lookup_value(value):
 
 
 def execute_bad_instruction(instruction):
+    if DEBUG_MODE:
+        print("Executing instruction: {}".format(instruction))
     command = instruction[0]
     binary_arithmetic_commands = {
         "add": operator.add,
@@ -568,7 +572,7 @@ def main():
     args = parser.parse_args()
 
     source = sys.stdin.read()
-    run_bad_code_from_string(source)
+    print(run_bad_code_from_string(source))
 
 if __name__ == "__main__":
     main()
