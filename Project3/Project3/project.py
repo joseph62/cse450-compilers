@@ -870,15 +870,16 @@ def p_error(p):
     raise SyntaxError(p)
 
 def generate_bad_code_from_string(input_):
-    lexer = lex.lex()
-    parser = yacc.yacc()
     try:
+        lexer = lex.lex()
+        parser = yacc.yacc()
         program = parser.parse(input_, lexer=lexer)
         output = []
         program.generate_bad_code(output)
     except:
         Tracker().reset()
         raise
+    Tracker().reset()
     return "\n".join(output) + "\n"
 
 if __name__ == "__main__":
