@@ -1,9 +1,10 @@
-Created by PLY version 3.7 (http://www.dabeaz.com/ply)
+Created by PLY version 3.10 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    CHAR_LITERAL
     WHITESPACE
+    COMMAND_BREAK
+    CHAR_LITERAL
     COMMENT
     STRING_LITERAL
 
@@ -66,6 +67,7 @@ ASSIGN_SUB           : 17
 BOOL_AND             : 23
 BOOL_OR              : 24
 CHAR_LITERAL         : 
+COMMAND_BREAK        : 
 COMMAND_PRINT        : 7
 COMMAND_RANDOM       : 21
 COMMENT              : 
@@ -161,154 +163,24 @@ state 2
     (22) type -> . TYPE
 
     $end            reduce using rule 1 (program -> statements .)
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    COMMAND_PRINT   shift and go to state 16
-    ID              shift and go to state 15
-    TYPE            shift and go to state 13
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    COMMAND_PRINT   shift and go to state 15
+    ID              shift and go to state 13
+    TYPE            shift and go to state 9
 
-    simple_declaration             shift and go to state 17
-    assign_declaration             shift and go to state 10
-    print_statement                shift and go to state 6
-    declaration                    shift and go to state 7
-    var_usage                      shift and go to state 5
-    type                           shift and go to state 12
-    expression                     shift and go to state 11
-    statement                      shift and go to state 4
+    type                           shift and go to state 11
+    expression                     shift and go to state 3
+    simple_declaration             shift and go to state 4
+    var_usage                      shift and go to state 12
+    declaration                    shift and go to state 5
+    statement                      shift and go to state 8
+    print_statement                shift and go to state 14
+    assign_declaration             shift and go to state 6
 
 state 3
-
-    (37) expression -> ( . expression )
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 18
-
-state 4
-
-    (3) statements -> statements statement .
-
-    COMMAND_RANDOM  reduce using rule 3 (statements -> statements statement .)
-    VAL_LITERAL     reduce using rule 3 (statements -> statements statement .)
-    -               reduce using rule 3 (statements -> statements statement .)
-    (               reduce using rule 3 (statements -> statements statement .)
-    COMMAND_PRINT   reduce using rule 3 (statements -> statements statement .)
-    ID              reduce using rule 3 (statements -> statements statement .)
-    TYPE            reduce using rule 3 (statements -> statements statement .)
-    $end            reduce using rule 3 (statements -> statements statement .)
-
-
-state 5
-
-    (15) expression -> var_usage . = expression
-    (16) expression -> var_usage . ASSIGN_ADD expression
-    (17) expression -> var_usage . ASSIGN_SUB expression
-    (18) expression -> var_usage . ASSIGN_MULT expression
-    (19) expression -> var_usage . ASSIGN_DIV expression
-    (20) expression -> var_usage .
-
-    =               shift and go to state 20
-    ASSIGN_ADD      shift and go to state 21
-    ASSIGN_SUB      shift and go to state 19
-    ASSIGN_MULT     shift and go to state 23
-    ASSIGN_DIV      shift and go to state 22
-    BOOL_AND        reduce using rule 20 (expression -> var_usage .)
-    BOOL_OR         reduce using rule 20 (expression -> var_usage .)
-    -               reduce using rule 20 (expression -> var_usage .)
-    *               reduce using rule 20 (expression -> var_usage .)
-    /               reduce using rule 20 (expression -> var_usage .)
-    +               reduce using rule 20 (expression -> var_usage .)
-    COMP_EQU        reduce using rule 20 (expression -> var_usage .)
-    COMP_NEQU       reduce using rule 20 (expression -> var_usage .)
-    COMP_LESS       reduce using rule 20 (expression -> var_usage .)
-    COMP_GTR        reduce using rule 20 (expression -> var_usage .)
-    COMP_LTE        reduce using rule 20 (expression -> var_usage .)
-    COMP_GTE        reduce using rule 20 (expression -> var_usage .)
-    ;               reduce using rule 20 (expression -> var_usage .)
-    )               reduce using rule 20 (expression -> var_usage .)
-    ,               reduce using rule 20 (expression -> var_usage .)
-
-
-state 6
-
-    (6) statement -> print_statement . ;
-
-    ;               shift and go to state 24
-
-
-state 7
-
-    (5) statement -> declaration . ;
-
-    ;               shift and go to state 25
-
-
-state 8
-
-    (25) expression -> VAL_LITERAL .
-
-    BOOL_AND        reduce using rule 25 (expression -> VAL_LITERAL .)
-    BOOL_OR         reduce using rule 25 (expression -> VAL_LITERAL .)
-    -               reduce using rule 25 (expression -> VAL_LITERAL .)
-    *               reduce using rule 25 (expression -> VAL_LITERAL .)
-    /               reduce using rule 25 (expression -> VAL_LITERAL .)
-    +               reduce using rule 25 (expression -> VAL_LITERAL .)
-    COMP_EQU        reduce using rule 25 (expression -> VAL_LITERAL .)
-    COMP_NEQU       reduce using rule 25 (expression -> VAL_LITERAL .)
-    COMP_LESS       reduce using rule 25 (expression -> VAL_LITERAL .)
-    COMP_GTR        reduce using rule 25 (expression -> VAL_LITERAL .)
-    COMP_LTE        reduce using rule 25 (expression -> VAL_LITERAL .)
-    COMP_GTE        reduce using rule 25 (expression -> VAL_LITERAL .)
-    ;               reduce using rule 25 (expression -> VAL_LITERAL .)
-    )               reduce using rule 25 (expression -> VAL_LITERAL .)
-    ,               reduce using rule 25 (expression -> VAL_LITERAL .)
-
-
-state 9
-
-    (21) expression -> COMMAND_RANDOM . ( expression )
-
-    (               shift and go to state 26
-
-
-state 10
-
-    (11) declaration -> assign_declaration .
-
-    ;               reduce using rule 11 (declaration -> assign_declaration .)
-
-
-state 11
 
     (4) statement -> expression . ;
     (23) expression -> expression . BOOL_AND expression
@@ -324,36 +196,45 @@ state 11
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    ;               shift and go to state 30
-    BOOL_AND        shift and go to state 36
-    BOOL_OR         shift and go to state 28
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
+    ;               shift and go to state 19
+    BOOL_AND        shift and go to state 21
+    BOOL_OR         shift and go to state 24
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
 
-state 12
+state 4
 
-    (12) simple_declaration -> type . ID
+    (10) declaration -> simple_declaration .
+    (13) assign_declaration -> simple_declaration . = expression
 
-    ID              shift and go to state 40
-
-
-state 13
-
-    (22) type -> TYPE .
-
-    ID              reduce using rule 22 (type -> TYPE .)
+    ;               reduce using rule 10 (declaration -> simple_declaration .)
+    =               shift and go to state 31
 
 
-state 14
+state 5
+
+    (5) statement -> declaration . ;
+
+    ;               shift and go to state 32
+
+
+state 6
+
+    (11) declaration -> assign_declaration .
+
+    ;               reduce using rule 11 (declaration -> assign_declaration .)
+
+
+state 7
 
     (32) expression -> - . expression
     (15) expression -> . var_usage = expression
@@ -380,16 +261,82 @@ state 14
     (37) expression -> . ( expression )
     (14) var_usage -> . ID
 
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
 
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 41
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 33
 
-state 15
+state 8
+
+    (3) statements -> statements statement .
+
+    COMMAND_RANDOM  reduce using rule 3 (statements -> statements statement .)
+    VAL_LITERAL     reduce using rule 3 (statements -> statements statement .)
+    -               reduce using rule 3 (statements -> statements statement .)
+    (               reduce using rule 3 (statements -> statements statement .)
+    COMMAND_PRINT   reduce using rule 3 (statements -> statements statement .)
+    ID              reduce using rule 3 (statements -> statements statement .)
+    TYPE            reduce using rule 3 (statements -> statements statement .)
+    $end            reduce using rule 3 (statements -> statements statement .)
+
+
+state 9
+
+    (22) type -> TYPE .
+
+    ID              reduce using rule 22 (type -> TYPE .)
+
+
+state 10
+
+    (21) expression -> COMMAND_RANDOM . ( expression )
+
+    (               shift and go to state 34
+
+
+state 11
+
+    (12) simple_declaration -> type . ID
+
+    ID              shift and go to state 35
+
+
+state 12
+
+    (15) expression -> var_usage . = expression
+    (16) expression -> var_usage . ASSIGN_ADD expression
+    (17) expression -> var_usage . ASSIGN_SUB expression
+    (18) expression -> var_usage . ASSIGN_MULT expression
+    (19) expression -> var_usage . ASSIGN_DIV expression
+    (20) expression -> var_usage .
+
+    =               shift and go to state 38
+    ASSIGN_ADD      shift and go to state 36
+    ASSIGN_SUB      shift and go to state 40
+    ASSIGN_MULT     shift and go to state 39
+    ASSIGN_DIV      shift and go to state 37
+    ,               reduce using rule 20 (expression -> var_usage .)
+    BOOL_AND        reduce using rule 20 (expression -> var_usage .)
+    BOOL_OR         reduce using rule 20 (expression -> var_usage .)
+    -               reduce using rule 20 (expression -> var_usage .)
+    *               reduce using rule 20 (expression -> var_usage .)
+    /               reduce using rule 20 (expression -> var_usage .)
+    +               reduce using rule 20 (expression -> var_usage .)
+    COMP_EQU        reduce using rule 20 (expression -> var_usage .)
+    COMP_NEQU       reduce using rule 20 (expression -> var_usage .)
+    COMP_LESS       reduce using rule 20 (expression -> var_usage .)
+    COMP_GTR        reduce using rule 20 (expression -> var_usage .)
+    COMP_LTE        reduce using rule 20 (expression -> var_usage .)
+    COMP_GTE        reduce using rule 20 (expression -> var_usage .)
+    )               reduce using rule 20 (expression -> var_usage .)
+    ;               reduce using rule 20 (expression -> var_usage .)
+
+
+state 13
 
     (14) var_usage -> ID .
 
@@ -398,7 +345,6 @@ state 15
     ASSIGN_SUB      reduce using rule 14 (var_usage -> ID .)
     ASSIGN_MULT     reduce using rule 14 (var_usage -> ID .)
     ASSIGN_DIV      reduce using rule 14 (var_usage -> ID .)
-    ;               reduce using rule 14 (var_usage -> ID .)
     BOOL_AND        reduce using rule 14 (var_usage -> ID .)
     BOOL_OR         reduce using rule 14 (var_usage -> ID .)
     -               reduce using rule 14 (var_usage -> ID .)
@@ -411,676 +357,83 @@ state 15
     COMP_GTR        reduce using rule 14 (var_usage -> ID .)
     COMP_LTE        reduce using rule 14 (var_usage -> ID .)
     COMP_GTE        reduce using rule 14 (var_usage -> ID .)
+    ;               reduce using rule 14 (var_usage -> ID .)
     )               reduce using rule 14 (var_usage -> ID .)
     ,               reduce using rule 14 (var_usage -> ID .)
 
 
-state 16
+state 14
+
+    (6) statement -> print_statement . ;
+
+    ;               shift and go to state 41
+
+
+state 15
 
     (7) print_statement -> COMMAND_PRINT . ( non_empty_comma_sep_expr )
 
     (               shift and go to state 42
 
 
+state 16
+
+    (37) expression -> ( . expression )
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 43
+
 state 17
 
-    (10) declaration -> simple_declaration .
-    (13) assign_declaration -> simple_declaration . = expression
+    (25) expression -> VAL_LITERAL .
 
-    ;               reduce using rule 10 (declaration -> simple_declaration .)
-    =               shift and go to state 43
+    ,               reduce using rule 25 (expression -> VAL_LITERAL .)
+    BOOL_AND        reduce using rule 25 (expression -> VAL_LITERAL .)
+    BOOL_OR         reduce using rule 25 (expression -> VAL_LITERAL .)
+    -               reduce using rule 25 (expression -> VAL_LITERAL .)
+    *               reduce using rule 25 (expression -> VAL_LITERAL .)
+    /               reduce using rule 25 (expression -> VAL_LITERAL .)
+    +               reduce using rule 25 (expression -> VAL_LITERAL .)
+    COMP_EQU        reduce using rule 25 (expression -> VAL_LITERAL .)
+    COMP_NEQU       reduce using rule 25 (expression -> VAL_LITERAL .)
+    COMP_LESS       reduce using rule 25 (expression -> VAL_LITERAL .)
+    COMP_GTR        reduce using rule 25 (expression -> VAL_LITERAL .)
+    COMP_LTE        reduce using rule 25 (expression -> VAL_LITERAL .)
+    COMP_GTE        reduce using rule 25 (expression -> VAL_LITERAL .)
+    )               reduce using rule 25 (expression -> VAL_LITERAL .)
+    ;               reduce using rule 25 (expression -> VAL_LITERAL .)
 
 
 state 18
-
-    (37) expression -> ( expression . )
-    (23) expression -> expression . BOOL_AND expression
-    (24) expression -> expression . BOOL_OR expression
-    (26) expression -> expression . - expression
-    (27) expression -> expression . * expression
-    (28) expression -> expression . / expression
-    (29) expression -> expression . + expression
-    (30) expression -> expression . COMP_EQU expression
-    (31) expression -> expression . COMP_NEQU expression
-    (33) expression -> expression . COMP_LESS expression
-    (34) expression -> expression . COMP_GTR expression
-    (35) expression -> expression . COMP_LTE expression
-    (36) expression -> expression . COMP_GTE expression
-
-    )               shift and go to state 44
-    BOOL_AND        shift and go to state 36
-    BOOL_OR         shift and go to state 28
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
-
-
-state 19
-
-    (17) expression -> var_usage ASSIGN_SUB . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    expression                     shift and go to state 45
-    var_usage                      shift and go to state 5
-
-state 20
-
-    (15) expression -> var_usage = . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    expression                     shift and go to state 46
-    var_usage                      shift and go to state 5
-
-state 21
-
-    (16) expression -> var_usage ASSIGN_ADD . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    expression                     shift and go to state 47
-    var_usage                      shift and go to state 5
-
-state 22
-
-    (19) expression -> var_usage ASSIGN_DIV . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    expression                     shift and go to state 48
-    var_usage                      shift and go to state 5
-
-state 23
-
-    (18) expression -> var_usage ASSIGN_MULT . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    expression                     shift and go to state 49
-    var_usage                      shift and go to state 5
-
-state 24
-
-    (6) statement -> print_statement ; .
-
-    COMMAND_RANDOM  reduce using rule 6 (statement -> print_statement ; .)
-    VAL_LITERAL     reduce using rule 6 (statement -> print_statement ; .)
-    -               reduce using rule 6 (statement -> print_statement ; .)
-    (               reduce using rule 6 (statement -> print_statement ; .)
-    COMMAND_PRINT   reduce using rule 6 (statement -> print_statement ; .)
-    ID              reduce using rule 6 (statement -> print_statement ; .)
-    TYPE            reduce using rule 6 (statement -> print_statement ; .)
-    $end            reduce using rule 6 (statement -> print_statement ; .)
-
-
-state 25
-
-    (5) statement -> declaration ; .
-
-    COMMAND_RANDOM  reduce using rule 5 (statement -> declaration ; .)
-    VAL_LITERAL     reduce using rule 5 (statement -> declaration ; .)
-    -               reduce using rule 5 (statement -> declaration ; .)
-    (               reduce using rule 5 (statement -> declaration ; .)
-    COMMAND_PRINT   reduce using rule 5 (statement -> declaration ; .)
-    ID              reduce using rule 5 (statement -> declaration ; .)
-    TYPE            reduce using rule 5 (statement -> declaration ; .)
-    $end            reduce using rule 5 (statement -> declaration ; .)
-
-
-state 26
-
-    (21) expression -> COMMAND_RANDOM ( . expression )
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 50
-
-state 27
-
-    (30) expression -> expression COMP_EQU . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 51
-
-state 28
-
-    (24) expression -> expression BOOL_OR . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 52
-
-state 29
-
-    (28) expression -> expression / . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 53
-
-state 30
-
-    (4) statement -> expression ; .
-
-    COMMAND_RANDOM  reduce using rule 4 (statement -> expression ; .)
-    VAL_LITERAL     reduce using rule 4 (statement -> expression ; .)
-    -               reduce using rule 4 (statement -> expression ; .)
-    (               reduce using rule 4 (statement -> expression ; .)
-    COMMAND_PRINT   reduce using rule 4 (statement -> expression ; .)
-    ID              reduce using rule 4 (statement -> expression ; .)
-    TYPE            reduce using rule 4 (statement -> expression ; .)
-    $end            reduce using rule 4 (statement -> expression ; .)
-
-
-state 31
-
-    (27) expression -> expression * . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 54
-
-state 32
-
-    (31) expression -> expression COMP_NEQU . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 55
-
-state 33
-
-    (34) expression -> expression COMP_GTR . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 56
-
-state 34
-
-    (36) expression -> expression COMP_GTE . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 57
-
-state 35
-
-    (26) expression -> expression - . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 58
-
-state 36
-
-    (23) expression -> expression BOOL_AND . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 59
-
-state 37
-
-    (35) expression -> expression COMP_LTE . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
-
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
-
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 60
-
-state 38
 
     (33) expression -> expression COMP_LESS . expression
     (15) expression -> . var_usage = expression
@@ -1107,16 +460,318 @@ state 38
     (37) expression -> . ( expression )
     (14) var_usage -> . ID
 
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
 
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 61
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 44
 
-state 39
+state 19
+
+    (4) statement -> expression ; .
+
+    COMMAND_RANDOM  reduce using rule 4 (statement -> expression ; .)
+    VAL_LITERAL     reduce using rule 4 (statement -> expression ; .)
+    -               reduce using rule 4 (statement -> expression ; .)
+    (               reduce using rule 4 (statement -> expression ; .)
+    COMMAND_PRINT   reduce using rule 4 (statement -> expression ; .)
+    ID              reduce using rule 4 (statement -> expression ; .)
+    TYPE            reduce using rule 4 (statement -> expression ; .)
+    $end            reduce using rule 4 (statement -> expression ; .)
+
+
+state 20
+
+    (30) expression -> expression COMP_EQU . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 45
+
+state 21
+
+    (23) expression -> expression BOOL_AND . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 46
+
+state 22
+
+    (31) expression -> expression COMP_NEQU . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 47
+
+state 23
+
+    (26) expression -> expression - . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 48
+
+state 24
+
+    (24) expression -> expression BOOL_OR . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 49
+
+state 25
+
+    (27) expression -> expression * . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 50
+
+state 26
+
+    (28) expression -> expression / . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 51
+
+state 27
+
+    (34) expression -> expression COMP_GTR . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 52
+
+state 28
 
     (29) expression -> expression + . expression
     (15) expression -> . var_usage = expression
@@ -1143,24 +798,138 @@ state 39
     (37) expression -> . ( expression )
     (14) var_usage -> . ID
 
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
 
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 62
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 53
 
-state 40
+state 29
 
-    (12) simple_declaration -> type ID .
+    (36) expression -> expression COMP_GTE . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
 
-    =               reduce using rule 12 (simple_declaration -> type ID .)
-    ;               reduce using rule 12 (simple_declaration -> type ID .)
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 54
+
+state 30
+
+    (35) expression -> expression COMP_LTE . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 55
+
+state 31
+
+    (13) assign_declaration -> simple_declaration = . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 56
+
+state 32
+
+    (5) statement -> declaration ; .
+
+    COMMAND_RANDOM  reduce using rule 5 (statement -> declaration ; .)
+    VAL_LITERAL     reduce using rule 5 (statement -> declaration ; .)
+    -               reduce using rule 5 (statement -> declaration ; .)
+    (               reduce using rule 5 (statement -> declaration ; .)
+    COMMAND_PRINT   reduce using rule 5 (statement -> declaration ; .)
+    ID              reduce using rule 5 (statement -> declaration ; .)
+    TYPE            reduce using rule 5 (statement -> declaration ; .)
+    $end            reduce using rule 5 (statement -> declaration ; .)
 
 
-state 41
+state 33
 
     (32) expression -> - expression .
     (23) expression -> expression . BOOL_AND expression
@@ -1176,6 +945,7 @@ state 41
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
+    ,               reduce using rule 32 (expression -> - expression .)
     BOOL_AND        reduce using rule 32 (expression -> - expression .)
     BOOL_OR         reduce using rule 32 (expression -> - expression .)
     -               reduce using rule 32 (expression -> - expression .)
@@ -1188,22 +958,259 @@ state 41
     COMP_GTR        reduce using rule 32 (expression -> - expression .)
     COMP_LTE        reduce using rule 32 (expression -> - expression .)
     COMP_GTE        reduce using rule 32 (expression -> - expression .)
-    ;               reduce using rule 32 (expression -> - expression .)
     )               reduce using rule 32 (expression -> - expression .)
-    ,               reduce using rule 32 (expression -> - expression .)
+    ;               reduce using rule 32 (expression -> - expression .)
 
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! -               [ shift and go to state 35 ]
-  ! *               [ shift and go to state 31 ]
-  ! /               [ shift and go to state 29 ]
-  ! +               [ shift and go to state 39 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! -               [ shift and go to state 23 ]
+  ! *               [ shift and go to state 25 ]
+  ! /               [ shift and go to state 26 ]
+  ! +               [ shift and go to state 28 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
+
+
+state 34
+
+    (21) expression -> COMMAND_RANDOM ( . expression )
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 57
+
+state 35
+
+    (12) simple_declaration -> type ID .
+
+    =               reduce using rule 12 (simple_declaration -> type ID .)
+    ;               reduce using rule 12 (simple_declaration -> type ID .)
+
+
+state 36
+
+    (16) expression -> var_usage ASSIGN_ADD . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 58
+
+state 37
+
+    (19) expression -> var_usage ASSIGN_DIV . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 59
+
+state 38
+
+    (15) expression -> var_usage = . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 60
+
+state 39
+
+    (18) expression -> var_usage ASSIGN_MULT . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 61
+
+state 40
+
+    (17) expression -> var_usage ASSIGN_SUB . expression
+    (15) expression -> . var_usage = expression
+    (16) expression -> . var_usage ASSIGN_ADD expression
+    (17) expression -> . var_usage ASSIGN_SUB expression
+    (18) expression -> . var_usage ASSIGN_MULT expression
+    (19) expression -> . var_usage ASSIGN_DIV expression
+    (20) expression -> . var_usage
+    (21) expression -> . COMMAND_RANDOM ( expression )
+    (23) expression -> . expression BOOL_AND expression
+    (24) expression -> . expression BOOL_OR expression
+    (25) expression -> . VAL_LITERAL
+    (26) expression -> . expression - expression
+    (27) expression -> . expression * expression
+    (28) expression -> . expression / expression
+    (29) expression -> . expression + expression
+    (30) expression -> . expression COMP_EQU expression
+    (31) expression -> . expression COMP_NEQU expression
+    (32) expression -> . - expression
+    (33) expression -> . expression COMP_LESS expression
+    (34) expression -> . expression COMP_GTR expression
+    (35) expression -> . expression COMP_LTE expression
+    (36) expression -> . expression COMP_GTE expression
+    (37) expression -> . ( expression )
+    (14) var_usage -> . ID
+
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
+
+    var_usage                      shift and go to state 12
+    expression                     shift and go to state 62
+
+state 41
+
+    (6) statement -> print_statement ; .
+
+    COMMAND_RANDOM  reduce using rule 6 (statement -> print_statement ; .)
+    VAL_LITERAL     reduce using rule 6 (statement -> print_statement ; .)
+    -               reduce using rule 6 (statement -> print_statement ; .)
+    (               reduce using rule 6 (statement -> print_statement ; .)
+    COMMAND_PRINT   reduce using rule 6 (statement -> print_statement ; .)
+    ID              reduce using rule 6 (statement -> print_statement ; .)
+    TYPE            reduce using rule 6 (statement -> print_statement ; .)
+    $end            reduce using rule 6 (statement -> print_statement ; .)
 
 
 state 42
@@ -1235,76 +1242,96 @@ state 42
     (37) expression -> . ( expression )
     (14) var_usage -> . ID
 
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
 
-    non_empty_comma_sep_expr       shift and go to state 64
-    var_usage                      shift and go to state 5
+    var_usage                      shift and go to state 12
     expression                     shift and go to state 63
+    non_empty_comma_sep_expr       shift and go to state 64
 
 state 43
 
-    (13) assign_declaration -> simple_declaration = . expression
-    (15) expression -> . var_usage = expression
-    (16) expression -> . var_usage ASSIGN_ADD expression
-    (17) expression -> . var_usage ASSIGN_SUB expression
-    (18) expression -> . var_usage ASSIGN_MULT expression
-    (19) expression -> . var_usage ASSIGN_DIV expression
-    (20) expression -> . var_usage
-    (21) expression -> . COMMAND_RANDOM ( expression )
-    (23) expression -> . expression BOOL_AND expression
-    (24) expression -> . expression BOOL_OR expression
-    (25) expression -> . VAL_LITERAL
-    (26) expression -> . expression - expression
-    (27) expression -> . expression * expression
-    (28) expression -> . expression / expression
-    (29) expression -> . expression + expression
-    (30) expression -> . expression COMP_EQU expression
-    (31) expression -> . expression COMP_NEQU expression
-    (32) expression -> . - expression
-    (33) expression -> . expression COMP_LESS expression
-    (34) expression -> . expression COMP_GTR expression
-    (35) expression -> . expression COMP_LTE expression
-    (36) expression -> . expression COMP_GTE expression
-    (37) expression -> . ( expression )
-    (14) var_usage -> . ID
+    (37) expression -> ( expression . )
+    (23) expression -> expression . BOOL_AND expression
+    (24) expression -> expression . BOOL_OR expression
+    (26) expression -> expression . - expression
+    (27) expression -> expression . * expression
+    (28) expression -> expression . / expression
+    (29) expression -> expression . + expression
+    (30) expression -> expression . COMP_EQU expression
+    (31) expression -> expression . COMP_NEQU expression
+    (33) expression -> expression . COMP_LESS expression
+    (34) expression -> expression . COMP_GTR expression
+    (35) expression -> expression . COMP_LTE expression
+    (36) expression -> expression . COMP_GTE expression
 
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
+    )               shift and go to state 65
+    BOOL_AND        shift and go to state 21
+    BOOL_OR         shift and go to state 24
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
-    var_usage                      shift and go to state 5
-    expression                     shift and go to state 65
 
 state 44
 
-    (37) expression -> ( expression ) .
+    (33) expression -> expression COMP_LESS expression .
+    (23) expression -> expression . BOOL_AND expression
+    (24) expression -> expression . BOOL_OR expression
+    (26) expression -> expression . - expression
+    (27) expression -> expression . * expression
+    (28) expression -> expression . / expression
+    (29) expression -> expression . + expression
+    (30) expression -> expression . COMP_EQU expression
+    (31) expression -> expression . COMP_NEQU expression
+    (33) expression -> expression . COMP_LESS expression
+    (34) expression -> expression . COMP_GTR expression
+    (35) expression -> expression . COMP_LTE expression
+    (36) expression -> expression . COMP_GTE expression
 
-    BOOL_AND        reduce using rule 37 (expression -> ( expression ) .)
-    BOOL_OR         reduce using rule 37 (expression -> ( expression ) .)
-    -               reduce using rule 37 (expression -> ( expression ) .)
-    *               reduce using rule 37 (expression -> ( expression ) .)
-    /               reduce using rule 37 (expression -> ( expression ) .)
-    +               reduce using rule 37 (expression -> ( expression ) .)
-    COMP_EQU        reduce using rule 37 (expression -> ( expression ) .)
-    COMP_NEQU       reduce using rule 37 (expression -> ( expression ) .)
-    COMP_LESS       reduce using rule 37 (expression -> ( expression ) .)
-    COMP_GTR        reduce using rule 37 (expression -> ( expression ) .)
-    COMP_LTE        reduce using rule 37 (expression -> ( expression ) .)
-    COMP_GTE        reduce using rule 37 (expression -> ( expression ) .)
-    ;               reduce using rule 37 (expression -> ( expression ) .)
-    )               reduce using rule 37 (expression -> ( expression ) .)
-    ,               reduce using rule 37 (expression -> ( expression ) .)
+    ,               reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    BOOL_AND        reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    BOOL_OR         reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    COMP_EQU        reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    COMP_NEQU       reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    COMP_LESS       reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    COMP_GTR        reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    COMP_LTE        reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    COMP_GTE        reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    )               reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    ;               reduce using rule 33 (expression -> expression COMP_LESS expression .)
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+
+  ! -               [ reduce using rule 33 (expression -> expression COMP_LESS expression .) ]
+  ! *               [ reduce using rule 33 (expression -> expression COMP_LESS expression .) ]
+  ! /               [ reduce using rule 33 (expression -> expression COMP_LESS expression .) ]
+  ! +               [ reduce using rule 33 (expression -> expression COMP_LESS expression .) ]
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
 
 
 state 45
 
-    (17) expression -> var_usage ASSIGN_SUB expression .
+    (30) expression -> expression COMP_EQU expression .
     (23) expression -> expression . BOOL_AND expression
     (24) expression -> expression . BOOL_OR expression
     (26) expression -> expression . - expression
@@ -1318,39 +1345,39 @@ state 45
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    ;               reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .)
-    )               reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .)
-    ,               reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .)
-    BOOL_AND        shift and go to state 36
-    BOOL_OR         shift and go to state 28
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
+    ,               reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    BOOL_AND        reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    BOOL_OR         reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    COMP_EQU        reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    COMP_NEQU       reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    COMP_LESS       reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    COMP_GTR        reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    COMP_LTE        reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    COMP_GTE        reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    )               reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    ;               reduce using rule 30 (expression -> expression COMP_EQU expression .)
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
 
-  ! BOOL_AND        [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! BOOL_OR         [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! -               [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! *               [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! /               [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! +               [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! COMP_EQU        [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! COMP_NEQU       [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! COMP_LESS       [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! COMP_GTR        [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! COMP_LTE        [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
-  ! COMP_GTE        [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! -               [ reduce using rule 30 (expression -> expression COMP_EQU expression .) ]
+  ! *               [ reduce using rule 30 (expression -> expression COMP_EQU expression .) ]
+  ! /               [ reduce using rule 30 (expression -> expression COMP_EQU expression .) ]
+  ! +               [ reduce using rule 30 (expression -> expression COMP_EQU expression .) ]
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
 
 
 state 46
 
-    (15) expression -> var_usage = expression .
+    (23) expression -> expression BOOL_AND expression .
     (23) expression -> expression . BOOL_AND expression
     (24) expression -> expression . BOOL_OR expression
     (26) expression -> expression . - expression
@@ -1364,39 +1391,39 @@ state 46
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    ;               reduce using rule 15 (expression -> var_usage = expression .)
-    )               reduce using rule 15 (expression -> var_usage = expression .)
-    ,               reduce using rule 15 (expression -> var_usage = expression .)
-    BOOL_AND        shift and go to state 36
-    BOOL_OR         shift and go to state 28
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
+    ,               reduce using rule 23 (expression -> expression BOOL_AND expression .)
+    BOOL_AND        reduce using rule 23 (expression -> expression BOOL_AND expression .)
+    BOOL_OR         reduce using rule 23 (expression -> expression BOOL_AND expression .)
+    )               reduce using rule 23 (expression -> expression BOOL_AND expression .)
+    ;               reduce using rule 23 (expression -> expression BOOL_AND expression .)
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
-  ! BOOL_AND        [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! BOOL_OR         [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! -               [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! *               [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! /               [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! +               [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! COMP_EQU        [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! COMP_NEQU       [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! COMP_LESS       [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! COMP_GTR        [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! COMP_LTE        [ reduce using rule 15 (expression -> var_usage = expression .) ]
-  ! COMP_GTE        [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! -               [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
+  ! *               [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
+  ! /               [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
+  ! +               [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
+  ! COMP_EQU        [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
+  ! COMP_NEQU       [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
+  ! COMP_LESS       [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
+  ! COMP_GTR        [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
+  ! COMP_LTE        [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
+  ! COMP_GTE        [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
 
 
 state 47
 
-    (16) expression -> var_usage ASSIGN_ADD expression .
+    (31) expression -> expression COMP_NEQU expression .
     (23) expression -> expression . BOOL_AND expression
     (24) expression -> expression . BOOL_OR expression
     (26) expression -> expression . - expression
@@ -1410,39 +1437,39 @@ state 47
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    ;               reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .)
-    )               reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .)
-    ,               reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .)
-    BOOL_AND        shift and go to state 36
-    BOOL_OR         shift and go to state 28
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
+    ,               reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    BOOL_AND        reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    BOOL_OR         reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    COMP_EQU        reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    COMP_NEQU       reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    COMP_LESS       reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    COMP_GTR        reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    COMP_LTE        reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    COMP_GTE        reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    )               reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    ;               reduce using rule 31 (expression -> expression COMP_NEQU expression .)
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
 
-  ! BOOL_AND        [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! BOOL_OR         [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! -               [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! *               [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! /               [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! +               [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! COMP_EQU        [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! COMP_NEQU       [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! COMP_LESS       [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! COMP_GTR        [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! COMP_LTE        [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
-  ! COMP_GTE        [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! -               [ reduce using rule 31 (expression -> expression COMP_NEQU expression .) ]
+  ! *               [ reduce using rule 31 (expression -> expression COMP_NEQU expression .) ]
+  ! /               [ reduce using rule 31 (expression -> expression COMP_NEQU expression .) ]
+  ! +               [ reduce using rule 31 (expression -> expression COMP_NEQU expression .) ]
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
 
 
 state 48
 
-    (19) expression -> var_usage ASSIGN_DIV expression .
+    (26) expression -> expression - expression .
     (23) expression -> expression . BOOL_AND expression
     (24) expression -> expression . BOOL_OR expression
     (26) expression -> expression . - expression
@@ -1456,39 +1483,39 @@ state 48
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    ;               reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .)
-    )               reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .)
-    ,               reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .)
-    BOOL_AND        shift and go to state 36
-    BOOL_OR         shift and go to state 28
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
+    ,               reduce using rule 26 (expression -> expression - expression .)
+    BOOL_AND        reduce using rule 26 (expression -> expression - expression .)
+    BOOL_OR         reduce using rule 26 (expression -> expression - expression .)
+    -               reduce using rule 26 (expression -> expression - expression .)
+    +               reduce using rule 26 (expression -> expression - expression .)
+    COMP_EQU        reduce using rule 26 (expression -> expression - expression .)
+    COMP_NEQU       reduce using rule 26 (expression -> expression - expression .)
+    COMP_LESS       reduce using rule 26 (expression -> expression - expression .)
+    COMP_GTR        reduce using rule 26 (expression -> expression - expression .)
+    COMP_LTE        reduce using rule 26 (expression -> expression - expression .)
+    COMP_GTE        reduce using rule 26 (expression -> expression - expression .)
+    )               reduce using rule 26 (expression -> expression - expression .)
+    ;               reduce using rule 26 (expression -> expression - expression .)
+    *               shift and go to state 25
+    /               shift and go to state 26
 
-  ! BOOL_AND        [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! BOOL_OR         [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! -               [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! *               [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! /               [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! +               [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! COMP_EQU        [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! COMP_NEQU       [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! COMP_LESS       [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! COMP_GTR        [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! COMP_LTE        [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
-  ! COMP_GTE        [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! *               [ reduce using rule 26 (expression -> expression - expression .) ]
+  ! /               [ reduce using rule 26 (expression -> expression - expression .) ]
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! -               [ shift and go to state 23 ]
+  ! +               [ shift and go to state 28 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
 
 
 state 49
 
-    (18) expression -> var_usage ASSIGN_MULT expression .
+    (24) expression -> expression BOOL_OR expression .
     (23) expression -> expression . BOOL_AND expression
     (24) expression -> expression . BOOL_OR expression
     (26) expression -> expression . - expression
@@ -1502,37 +1529,344 @@ state 49
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    ;               reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .)
-    )               reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .)
-    ,               reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .)
-    BOOL_AND        shift and go to state 36
-    BOOL_OR         shift and go to state 28
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
+    ,               reduce using rule 24 (expression -> expression BOOL_OR expression .)
+    BOOL_OR         reduce using rule 24 (expression -> expression BOOL_OR expression .)
+    )               reduce using rule 24 (expression -> expression BOOL_OR expression .)
+    ;               reduce using rule 24 (expression -> expression BOOL_OR expression .)
+    BOOL_AND        shift and go to state 21
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
-  ! BOOL_AND        [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! BOOL_OR         [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! -               [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! *               [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! /               [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! +               [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! COMP_EQU        [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! COMP_NEQU       [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! COMP_LESS       [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! COMP_GTR        [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! COMP_LTE        [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
-  ! COMP_GTE        [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! BOOL_AND        [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! -               [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! *               [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! /               [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! +               [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! COMP_EQU        [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! COMP_NEQU       [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! COMP_LESS       [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! COMP_GTR        [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! COMP_LTE        [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! COMP_GTE        [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
+  ! BOOL_OR         [ shift and go to state 24 ]
 
 
 state 50
+
+    (27) expression -> expression * expression .
+    (23) expression -> expression . BOOL_AND expression
+    (24) expression -> expression . BOOL_OR expression
+    (26) expression -> expression . - expression
+    (27) expression -> expression . * expression
+    (28) expression -> expression . / expression
+    (29) expression -> expression . + expression
+    (30) expression -> expression . COMP_EQU expression
+    (31) expression -> expression . COMP_NEQU expression
+    (33) expression -> expression . COMP_LESS expression
+    (34) expression -> expression . COMP_GTR expression
+    (35) expression -> expression . COMP_LTE expression
+    (36) expression -> expression . COMP_GTE expression
+
+    ,               reduce using rule 27 (expression -> expression * expression .)
+    BOOL_AND        reduce using rule 27 (expression -> expression * expression .)
+    BOOL_OR         reduce using rule 27 (expression -> expression * expression .)
+    -               reduce using rule 27 (expression -> expression * expression .)
+    *               reduce using rule 27 (expression -> expression * expression .)
+    /               reduce using rule 27 (expression -> expression * expression .)
+    +               reduce using rule 27 (expression -> expression * expression .)
+    COMP_EQU        reduce using rule 27 (expression -> expression * expression .)
+    COMP_NEQU       reduce using rule 27 (expression -> expression * expression .)
+    COMP_LESS       reduce using rule 27 (expression -> expression * expression .)
+    COMP_GTR        reduce using rule 27 (expression -> expression * expression .)
+    COMP_LTE        reduce using rule 27 (expression -> expression * expression .)
+    COMP_GTE        reduce using rule 27 (expression -> expression * expression .)
+    )               reduce using rule 27 (expression -> expression * expression .)
+    ;               reduce using rule 27 (expression -> expression * expression .)
+
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! -               [ shift and go to state 23 ]
+  ! *               [ shift and go to state 25 ]
+  ! /               [ shift and go to state 26 ]
+  ! +               [ shift and go to state 28 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
+
+
+state 51
+
+    (28) expression -> expression / expression .
+    (23) expression -> expression . BOOL_AND expression
+    (24) expression -> expression . BOOL_OR expression
+    (26) expression -> expression . - expression
+    (27) expression -> expression . * expression
+    (28) expression -> expression . / expression
+    (29) expression -> expression . + expression
+    (30) expression -> expression . COMP_EQU expression
+    (31) expression -> expression . COMP_NEQU expression
+    (33) expression -> expression . COMP_LESS expression
+    (34) expression -> expression . COMP_GTR expression
+    (35) expression -> expression . COMP_LTE expression
+    (36) expression -> expression . COMP_GTE expression
+
+    ,               reduce using rule 28 (expression -> expression / expression .)
+    BOOL_AND        reduce using rule 28 (expression -> expression / expression .)
+    BOOL_OR         reduce using rule 28 (expression -> expression / expression .)
+    -               reduce using rule 28 (expression -> expression / expression .)
+    *               reduce using rule 28 (expression -> expression / expression .)
+    /               reduce using rule 28 (expression -> expression / expression .)
+    +               reduce using rule 28 (expression -> expression / expression .)
+    COMP_EQU        reduce using rule 28 (expression -> expression / expression .)
+    COMP_NEQU       reduce using rule 28 (expression -> expression / expression .)
+    COMP_LESS       reduce using rule 28 (expression -> expression / expression .)
+    COMP_GTR        reduce using rule 28 (expression -> expression / expression .)
+    COMP_LTE        reduce using rule 28 (expression -> expression / expression .)
+    COMP_GTE        reduce using rule 28 (expression -> expression / expression .)
+    )               reduce using rule 28 (expression -> expression / expression .)
+    ;               reduce using rule 28 (expression -> expression / expression .)
+
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! -               [ shift and go to state 23 ]
+  ! *               [ shift and go to state 25 ]
+  ! /               [ shift and go to state 26 ]
+  ! +               [ shift and go to state 28 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
+
+
+state 52
+
+    (34) expression -> expression COMP_GTR expression .
+    (23) expression -> expression . BOOL_AND expression
+    (24) expression -> expression . BOOL_OR expression
+    (26) expression -> expression . - expression
+    (27) expression -> expression . * expression
+    (28) expression -> expression . / expression
+    (29) expression -> expression . + expression
+    (30) expression -> expression . COMP_EQU expression
+    (31) expression -> expression . COMP_NEQU expression
+    (33) expression -> expression . COMP_LESS expression
+    (34) expression -> expression . COMP_GTR expression
+    (35) expression -> expression . COMP_LTE expression
+    (36) expression -> expression . COMP_GTE expression
+
+    ,               reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    BOOL_AND        reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    BOOL_OR         reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    COMP_EQU        reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    COMP_NEQU       reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    COMP_LESS       reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    COMP_GTR        reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    COMP_LTE        reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    COMP_GTE        reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    )               reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    ;               reduce using rule 34 (expression -> expression COMP_GTR expression .)
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+
+  ! -               [ reduce using rule 34 (expression -> expression COMP_GTR expression .) ]
+  ! *               [ reduce using rule 34 (expression -> expression COMP_GTR expression .) ]
+  ! /               [ reduce using rule 34 (expression -> expression COMP_GTR expression .) ]
+  ! +               [ reduce using rule 34 (expression -> expression COMP_GTR expression .) ]
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
+
+
+state 53
+
+    (29) expression -> expression + expression .
+    (23) expression -> expression . BOOL_AND expression
+    (24) expression -> expression . BOOL_OR expression
+    (26) expression -> expression . - expression
+    (27) expression -> expression . * expression
+    (28) expression -> expression . / expression
+    (29) expression -> expression . + expression
+    (30) expression -> expression . COMP_EQU expression
+    (31) expression -> expression . COMP_NEQU expression
+    (33) expression -> expression . COMP_LESS expression
+    (34) expression -> expression . COMP_GTR expression
+    (35) expression -> expression . COMP_LTE expression
+    (36) expression -> expression . COMP_GTE expression
+
+    ,               reduce using rule 29 (expression -> expression + expression .)
+    BOOL_AND        reduce using rule 29 (expression -> expression + expression .)
+    BOOL_OR         reduce using rule 29 (expression -> expression + expression .)
+    -               reduce using rule 29 (expression -> expression + expression .)
+    +               reduce using rule 29 (expression -> expression + expression .)
+    COMP_EQU        reduce using rule 29 (expression -> expression + expression .)
+    COMP_NEQU       reduce using rule 29 (expression -> expression + expression .)
+    COMP_LESS       reduce using rule 29 (expression -> expression + expression .)
+    COMP_GTR        reduce using rule 29 (expression -> expression + expression .)
+    COMP_LTE        reduce using rule 29 (expression -> expression + expression .)
+    COMP_GTE        reduce using rule 29 (expression -> expression + expression .)
+    )               reduce using rule 29 (expression -> expression + expression .)
+    ;               reduce using rule 29 (expression -> expression + expression .)
+    *               shift and go to state 25
+    /               shift and go to state 26
+
+  ! *               [ reduce using rule 29 (expression -> expression + expression .) ]
+  ! /               [ reduce using rule 29 (expression -> expression + expression .) ]
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! -               [ shift and go to state 23 ]
+  ! +               [ shift and go to state 28 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
+
+
+state 54
+
+    (36) expression -> expression COMP_GTE expression .
+    (23) expression -> expression . BOOL_AND expression
+    (24) expression -> expression . BOOL_OR expression
+    (26) expression -> expression . - expression
+    (27) expression -> expression . * expression
+    (28) expression -> expression . / expression
+    (29) expression -> expression . + expression
+    (30) expression -> expression . COMP_EQU expression
+    (31) expression -> expression . COMP_NEQU expression
+    (33) expression -> expression . COMP_LESS expression
+    (34) expression -> expression . COMP_GTR expression
+    (35) expression -> expression . COMP_LTE expression
+    (36) expression -> expression . COMP_GTE expression
+
+    ,               reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    BOOL_AND        reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    BOOL_OR         reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    COMP_EQU        reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    COMP_NEQU       reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    COMP_LESS       reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    COMP_GTR        reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    COMP_LTE        reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    COMP_GTE        reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    )               reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    ;               reduce using rule 36 (expression -> expression COMP_GTE expression .)
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+
+  ! -               [ reduce using rule 36 (expression -> expression COMP_GTE expression .) ]
+  ! *               [ reduce using rule 36 (expression -> expression COMP_GTE expression .) ]
+  ! /               [ reduce using rule 36 (expression -> expression COMP_GTE expression .) ]
+  ! +               [ reduce using rule 36 (expression -> expression COMP_GTE expression .) ]
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
+
+
+state 55
+
+    (35) expression -> expression COMP_LTE expression .
+    (23) expression -> expression . BOOL_AND expression
+    (24) expression -> expression . BOOL_OR expression
+    (26) expression -> expression . - expression
+    (27) expression -> expression . * expression
+    (28) expression -> expression . / expression
+    (29) expression -> expression . + expression
+    (30) expression -> expression . COMP_EQU expression
+    (31) expression -> expression . COMP_NEQU expression
+    (33) expression -> expression . COMP_LESS expression
+    (34) expression -> expression . COMP_GTR expression
+    (35) expression -> expression . COMP_LTE expression
+    (36) expression -> expression . COMP_GTE expression
+
+    ,               reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    BOOL_AND        reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    BOOL_OR         reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    COMP_EQU        reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    COMP_NEQU       reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    COMP_LESS       reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    COMP_GTR        reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    COMP_LTE        reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    COMP_GTE        reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    )               reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    ;               reduce using rule 35 (expression -> expression COMP_LTE expression .)
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+
+  ! -               [ reduce using rule 35 (expression -> expression COMP_LTE expression .) ]
+  ! *               [ reduce using rule 35 (expression -> expression COMP_LTE expression .) ]
+  ! /               [ reduce using rule 35 (expression -> expression COMP_LTE expression .) ]
+  ! +               [ reduce using rule 35 (expression -> expression COMP_LTE expression .) ]
+  ! BOOL_AND        [ shift and go to state 21 ]
+  ! BOOL_OR         [ shift and go to state 24 ]
+  ! COMP_EQU        [ shift and go to state 20 ]
+  ! COMP_NEQU       [ shift and go to state 22 ]
+  ! COMP_LESS       [ shift and go to state 18 ]
+  ! COMP_GTR        [ shift and go to state 27 ]
+  ! COMP_LTE        [ shift and go to state 30 ]
+  ! COMP_GTE        [ shift and go to state 29 ]
+
+
+state 56
+
+    (13) assign_declaration -> simple_declaration = expression .
+    (23) expression -> expression . BOOL_AND expression
+    (24) expression -> expression . BOOL_OR expression
+    (26) expression -> expression . - expression
+    (27) expression -> expression . * expression
+    (28) expression -> expression . / expression
+    (29) expression -> expression . + expression
+    (30) expression -> expression . COMP_EQU expression
+    (31) expression -> expression . COMP_NEQU expression
+    (33) expression -> expression . COMP_LESS expression
+    (34) expression -> expression . COMP_GTR expression
+    (35) expression -> expression . COMP_LTE expression
+    (36) expression -> expression . COMP_GTE expression
+
+    ;               reduce using rule 13 (assign_declaration -> simple_declaration = expression .)
+    BOOL_AND        shift and go to state 21
+    BOOL_OR         shift and go to state 24
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
+
+
+state 57
 
     (21) expression -> COMMAND_RANDOM ( expression . )
     (23) expression -> expression . BOOL_AND expression
@@ -1549,345 +1883,23 @@ state 50
     (36) expression -> expression . COMP_GTE expression
 
     )               shift and go to state 66
-    BOOL_AND        shift and go to state 36
-    BOOL_OR         shift and go to state 28
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
-
-
-state 51
-
-    (30) expression -> expression COMP_EQU expression .
-    (23) expression -> expression . BOOL_AND expression
-    (24) expression -> expression . BOOL_OR expression
-    (26) expression -> expression . - expression
-    (27) expression -> expression . * expression
-    (28) expression -> expression . / expression
-    (29) expression -> expression . + expression
-    (30) expression -> expression . COMP_EQU expression
-    (31) expression -> expression . COMP_NEQU expression
-    (33) expression -> expression . COMP_LESS expression
-    (34) expression -> expression . COMP_GTR expression
-    (35) expression -> expression . COMP_LTE expression
-    (36) expression -> expression . COMP_GTE expression
-
-    BOOL_AND        reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    BOOL_OR         reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    COMP_EQU        reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    COMP_NEQU       reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    COMP_LESS       reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    COMP_GTR        reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    COMP_LTE        reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    COMP_GTE        reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    ;               reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    )               reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    ,               reduce using rule 30 (expression -> expression COMP_EQU expression .)
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-
-  ! -               [ reduce using rule 30 (expression -> expression COMP_EQU expression .) ]
-  ! *               [ reduce using rule 30 (expression -> expression COMP_EQU expression .) ]
-  ! /               [ reduce using rule 30 (expression -> expression COMP_EQU expression .) ]
-  ! +               [ reduce using rule 30 (expression -> expression COMP_EQU expression .) ]
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
-
-
-state 52
-
-    (24) expression -> expression BOOL_OR expression .
-    (23) expression -> expression . BOOL_AND expression
-    (24) expression -> expression . BOOL_OR expression
-    (26) expression -> expression . - expression
-    (27) expression -> expression . * expression
-    (28) expression -> expression . / expression
-    (29) expression -> expression . + expression
-    (30) expression -> expression . COMP_EQU expression
-    (31) expression -> expression . COMP_NEQU expression
-    (33) expression -> expression . COMP_LESS expression
-    (34) expression -> expression . COMP_GTR expression
-    (35) expression -> expression . COMP_LTE expression
-    (36) expression -> expression . COMP_GTE expression
-
-    BOOL_OR         reduce using rule 24 (expression -> expression BOOL_OR expression .)
-    ;               reduce using rule 24 (expression -> expression BOOL_OR expression .)
-    )               reduce using rule 24 (expression -> expression BOOL_OR expression .)
-    ,               reduce using rule 24 (expression -> expression BOOL_OR expression .)
-    BOOL_AND        shift and go to state 36
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
-
-  ! BOOL_AND        [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! -               [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! *               [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! /               [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! +               [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! COMP_EQU        [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! COMP_NEQU       [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! COMP_LESS       [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! COMP_GTR        [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! COMP_LTE        [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! COMP_GTE        [ reduce using rule 24 (expression -> expression BOOL_OR expression .) ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-
-
-state 53
-
-    (28) expression -> expression / expression .
-    (23) expression -> expression . BOOL_AND expression
-    (24) expression -> expression . BOOL_OR expression
-    (26) expression -> expression . - expression
-    (27) expression -> expression . * expression
-    (28) expression -> expression . / expression
-    (29) expression -> expression . + expression
-    (30) expression -> expression . COMP_EQU expression
-    (31) expression -> expression . COMP_NEQU expression
-    (33) expression -> expression . COMP_LESS expression
-    (34) expression -> expression . COMP_GTR expression
-    (35) expression -> expression . COMP_LTE expression
-    (36) expression -> expression . COMP_GTE expression
-
-    BOOL_AND        reduce using rule 28 (expression -> expression / expression .)
-    BOOL_OR         reduce using rule 28 (expression -> expression / expression .)
-    -               reduce using rule 28 (expression -> expression / expression .)
-    *               reduce using rule 28 (expression -> expression / expression .)
-    /               reduce using rule 28 (expression -> expression / expression .)
-    +               reduce using rule 28 (expression -> expression / expression .)
-    COMP_EQU        reduce using rule 28 (expression -> expression / expression .)
-    COMP_NEQU       reduce using rule 28 (expression -> expression / expression .)
-    COMP_LESS       reduce using rule 28 (expression -> expression / expression .)
-    COMP_GTR        reduce using rule 28 (expression -> expression / expression .)
-    COMP_LTE        reduce using rule 28 (expression -> expression / expression .)
-    COMP_GTE        reduce using rule 28 (expression -> expression / expression .)
-    ;               reduce using rule 28 (expression -> expression / expression .)
-    )               reduce using rule 28 (expression -> expression / expression .)
-    ,               reduce using rule 28 (expression -> expression / expression .)
-
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! -               [ shift and go to state 35 ]
-  ! *               [ shift and go to state 31 ]
-  ! /               [ shift and go to state 29 ]
-  ! +               [ shift and go to state 39 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
-
-
-state 54
-
-    (27) expression -> expression * expression .
-    (23) expression -> expression . BOOL_AND expression
-    (24) expression -> expression . BOOL_OR expression
-    (26) expression -> expression . - expression
-    (27) expression -> expression . * expression
-    (28) expression -> expression . / expression
-    (29) expression -> expression . + expression
-    (30) expression -> expression . COMP_EQU expression
-    (31) expression -> expression . COMP_NEQU expression
-    (33) expression -> expression . COMP_LESS expression
-    (34) expression -> expression . COMP_GTR expression
-    (35) expression -> expression . COMP_LTE expression
-    (36) expression -> expression . COMP_GTE expression
-
-    BOOL_AND        reduce using rule 27 (expression -> expression * expression .)
-    BOOL_OR         reduce using rule 27 (expression -> expression * expression .)
-    -               reduce using rule 27 (expression -> expression * expression .)
-    *               reduce using rule 27 (expression -> expression * expression .)
-    /               reduce using rule 27 (expression -> expression * expression .)
-    +               reduce using rule 27 (expression -> expression * expression .)
-    COMP_EQU        reduce using rule 27 (expression -> expression * expression .)
-    COMP_NEQU       reduce using rule 27 (expression -> expression * expression .)
-    COMP_LESS       reduce using rule 27 (expression -> expression * expression .)
-    COMP_GTR        reduce using rule 27 (expression -> expression * expression .)
-    COMP_LTE        reduce using rule 27 (expression -> expression * expression .)
-    COMP_GTE        reduce using rule 27 (expression -> expression * expression .)
-    ;               reduce using rule 27 (expression -> expression * expression .)
-    )               reduce using rule 27 (expression -> expression * expression .)
-    ,               reduce using rule 27 (expression -> expression * expression .)
-
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! -               [ shift and go to state 35 ]
-  ! *               [ shift and go to state 31 ]
-  ! /               [ shift and go to state 29 ]
-  ! +               [ shift and go to state 39 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
-
-
-state 55
-
-    (31) expression -> expression COMP_NEQU expression .
-    (23) expression -> expression . BOOL_AND expression
-    (24) expression -> expression . BOOL_OR expression
-    (26) expression -> expression . - expression
-    (27) expression -> expression . * expression
-    (28) expression -> expression . / expression
-    (29) expression -> expression . + expression
-    (30) expression -> expression . COMP_EQU expression
-    (31) expression -> expression . COMP_NEQU expression
-    (33) expression -> expression . COMP_LESS expression
-    (34) expression -> expression . COMP_GTR expression
-    (35) expression -> expression . COMP_LTE expression
-    (36) expression -> expression . COMP_GTE expression
-
-    BOOL_AND        reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    BOOL_OR         reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    COMP_EQU        reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    COMP_NEQU       reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    COMP_LESS       reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    COMP_GTR        reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    COMP_LTE        reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    COMP_GTE        reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    ;               reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    )               reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    ,               reduce using rule 31 (expression -> expression COMP_NEQU expression .)
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-
-  ! -               [ reduce using rule 31 (expression -> expression COMP_NEQU expression .) ]
-  ! *               [ reduce using rule 31 (expression -> expression COMP_NEQU expression .) ]
-  ! /               [ reduce using rule 31 (expression -> expression COMP_NEQU expression .) ]
-  ! +               [ reduce using rule 31 (expression -> expression COMP_NEQU expression .) ]
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
-
-
-state 56
-
-    (34) expression -> expression COMP_GTR expression .
-    (23) expression -> expression . BOOL_AND expression
-    (24) expression -> expression . BOOL_OR expression
-    (26) expression -> expression . - expression
-    (27) expression -> expression . * expression
-    (28) expression -> expression . / expression
-    (29) expression -> expression . + expression
-    (30) expression -> expression . COMP_EQU expression
-    (31) expression -> expression . COMP_NEQU expression
-    (33) expression -> expression . COMP_LESS expression
-    (34) expression -> expression . COMP_GTR expression
-    (35) expression -> expression . COMP_LTE expression
-    (36) expression -> expression . COMP_GTE expression
-
-    BOOL_AND        reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    BOOL_OR         reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    COMP_EQU        reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    COMP_NEQU       reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    COMP_LESS       reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    COMP_GTR        reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    COMP_LTE        reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    COMP_GTE        reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    ;               reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    )               reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    ,               reduce using rule 34 (expression -> expression COMP_GTR expression .)
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-
-  ! -               [ reduce using rule 34 (expression -> expression COMP_GTR expression .) ]
-  ! *               [ reduce using rule 34 (expression -> expression COMP_GTR expression .) ]
-  ! /               [ reduce using rule 34 (expression -> expression COMP_GTR expression .) ]
-  ! +               [ reduce using rule 34 (expression -> expression COMP_GTR expression .) ]
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
-
-
-state 57
-
-    (36) expression -> expression COMP_GTE expression .
-    (23) expression -> expression . BOOL_AND expression
-    (24) expression -> expression . BOOL_OR expression
-    (26) expression -> expression . - expression
-    (27) expression -> expression . * expression
-    (28) expression -> expression . / expression
-    (29) expression -> expression . + expression
-    (30) expression -> expression . COMP_EQU expression
-    (31) expression -> expression . COMP_NEQU expression
-    (33) expression -> expression . COMP_LESS expression
-    (34) expression -> expression . COMP_GTR expression
-    (35) expression -> expression . COMP_LTE expression
-    (36) expression -> expression . COMP_GTE expression
-
-    BOOL_AND        reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    BOOL_OR         reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    COMP_EQU        reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    COMP_NEQU       reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    COMP_LESS       reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    COMP_GTR        reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    COMP_LTE        reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    COMP_GTE        reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    ;               reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    )               reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    ,               reduce using rule 36 (expression -> expression COMP_GTE expression .)
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-
-  ! -               [ reduce using rule 36 (expression -> expression COMP_GTE expression .) ]
-  ! *               [ reduce using rule 36 (expression -> expression COMP_GTE expression .) ]
-  ! /               [ reduce using rule 36 (expression -> expression COMP_GTE expression .) ]
-  ! +               [ reduce using rule 36 (expression -> expression COMP_GTE expression .) ]
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
+    BOOL_AND        shift and go to state 21
+    BOOL_OR         shift and go to state 24
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
 
 state 58
 
-    (26) expression -> expression - expression .
+    (16) expression -> var_usage ASSIGN_ADD expression .
     (23) expression -> expression . BOOL_AND expression
     (24) expression -> expression . BOOL_OR expression
     (26) expression -> expression . - expression
@@ -1901,39 +1913,39 @@ state 58
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    BOOL_AND        reduce using rule 26 (expression -> expression - expression .)
-    BOOL_OR         reduce using rule 26 (expression -> expression - expression .)
-    -               reduce using rule 26 (expression -> expression - expression .)
-    +               reduce using rule 26 (expression -> expression - expression .)
-    COMP_EQU        reduce using rule 26 (expression -> expression - expression .)
-    COMP_NEQU       reduce using rule 26 (expression -> expression - expression .)
-    COMP_LESS       reduce using rule 26 (expression -> expression - expression .)
-    COMP_GTR        reduce using rule 26 (expression -> expression - expression .)
-    COMP_LTE        reduce using rule 26 (expression -> expression - expression .)
-    COMP_GTE        reduce using rule 26 (expression -> expression - expression .)
-    ;               reduce using rule 26 (expression -> expression - expression .)
-    )               reduce using rule 26 (expression -> expression - expression .)
-    ,               reduce using rule 26 (expression -> expression - expression .)
-    *               shift and go to state 31
-    /               shift and go to state 29
+    ,               reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .)
+    )               reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .)
+    ;               reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .)
+    BOOL_AND        shift and go to state 21
+    BOOL_OR         shift and go to state 24
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
-  ! *               [ reduce using rule 26 (expression -> expression - expression .) ]
-  ! /               [ reduce using rule 26 (expression -> expression - expression .) ]
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! -               [ shift and go to state 35 ]
-  ! +               [ shift and go to state 39 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
+  ! BOOL_AND        [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! BOOL_OR         [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! -               [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! *               [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! /               [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! +               [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! COMP_EQU        [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! COMP_NEQU       [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! COMP_LESS       [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! COMP_GTR        [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! COMP_LTE        [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
+  ! COMP_GTE        [ reduce using rule 16 (expression -> var_usage ASSIGN_ADD expression .) ]
 
 
 state 59
 
-    (23) expression -> expression BOOL_AND expression .
+    (19) expression -> var_usage ASSIGN_DIV expression .
     (23) expression -> expression . BOOL_AND expression
     (24) expression -> expression . BOOL_OR expression
     (26) expression -> expression . - expression
@@ -1947,39 +1959,39 @@ state 59
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    BOOL_AND        reduce using rule 23 (expression -> expression BOOL_AND expression .)
-    BOOL_OR         reduce using rule 23 (expression -> expression BOOL_AND expression .)
-    ;               reduce using rule 23 (expression -> expression BOOL_AND expression .)
-    )               reduce using rule 23 (expression -> expression BOOL_AND expression .)
-    ,               reduce using rule 23 (expression -> expression BOOL_AND expression .)
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
+    ,               reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .)
+    )               reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .)
+    ;               reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .)
+    BOOL_AND        shift and go to state 21
+    BOOL_OR         shift and go to state 24
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
-  ! -               [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
-  ! *               [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
-  ! /               [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
-  ! +               [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
-  ! COMP_EQU        [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
-  ! COMP_NEQU       [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
-  ! COMP_LESS       [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
-  ! COMP_GTR        [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
-  ! COMP_LTE        [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
-  ! COMP_GTE        [ reduce using rule 23 (expression -> expression BOOL_AND expression .) ]
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
+  ! BOOL_AND        [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! BOOL_OR         [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! -               [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! *               [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! /               [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! +               [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! COMP_EQU        [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! COMP_NEQU       [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! COMP_LESS       [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! COMP_GTR        [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! COMP_LTE        [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
+  ! COMP_GTE        [ reduce using rule 19 (expression -> var_usage ASSIGN_DIV expression .) ]
 
 
 state 60
 
-    (35) expression -> expression COMP_LTE expression .
+    (15) expression -> var_usage = expression .
     (23) expression -> expression . BOOL_AND expression
     (24) expression -> expression . BOOL_OR expression
     (26) expression -> expression . - expression
@@ -1993,39 +2005,39 @@ state 60
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    BOOL_AND        reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    BOOL_OR         reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    COMP_EQU        reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    COMP_NEQU       reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    COMP_LESS       reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    COMP_GTR        reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    COMP_LTE        reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    COMP_GTE        reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    ;               reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    )               reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    ,               reduce using rule 35 (expression -> expression COMP_LTE expression .)
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
+    ,               reduce using rule 15 (expression -> var_usage = expression .)
+    )               reduce using rule 15 (expression -> var_usage = expression .)
+    ;               reduce using rule 15 (expression -> var_usage = expression .)
+    BOOL_AND        shift and go to state 21
+    BOOL_OR         shift and go to state 24
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
-  ! -               [ reduce using rule 35 (expression -> expression COMP_LTE expression .) ]
-  ! *               [ reduce using rule 35 (expression -> expression COMP_LTE expression .) ]
-  ! /               [ reduce using rule 35 (expression -> expression COMP_LTE expression .) ]
-  ! +               [ reduce using rule 35 (expression -> expression COMP_LTE expression .) ]
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
+  ! BOOL_AND        [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! BOOL_OR         [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! -               [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! *               [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! /               [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! +               [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! COMP_EQU        [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! COMP_NEQU       [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! COMP_LESS       [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! COMP_GTR        [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! COMP_LTE        [ reduce using rule 15 (expression -> var_usage = expression .) ]
+  ! COMP_GTE        [ reduce using rule 15 (expression -> var_usage = expression .) ]
 
 
 state 61
 
-    (33) expression -> expression COMP_LESS expression .
+    (18) expression -> var_usage ASSIGN_MULT expression .
     (23) expression -> expression . BOOL_AND expression
     (24) expression -> expression . BOOL_OR expression
     (26) expression -> expression . - expression
@@ -2039,39 +2051,39 @@ state 61
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    BOOL_AND        reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    BOOL_OR         reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    COMP_EQU        reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    COMP_NEQU       reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    COMP_LESS       reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    COMP_GTR        reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    COMP_LTE        reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    COMP_GTE        reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    ;               reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    )               reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    ,               reduce using rule 33 (expression -> expression COMP_LESS expression .)
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
+    ,               reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .)
+    )               reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .)
+    ;               reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .)
+    BOOL_AND        shift and go to state 21
+    BOOL_OR         shift and go to state 24
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
-  ! -               [ reduce using rule 33 (expression -> expression COMP_LESS expression .) ]
-  ! *               [ reduce using rule 33 (expression -> expression COMP_LESS expression .) ]
-  ! /               [ reduce using rule 33 (expression -> expression COMP_LESS expression .) ]
-  ! +               [ reduce using rule 33 (expression -> expression COMP_LESS expression .) ]
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
+  ! BOOL_AND        [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! BOOL_OR         [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! -               [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! *               [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! /               [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! +               [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! COMP_EQU        [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! COMP_NEQU       [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! COMP_LESS       [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! COMP_GTR        [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! COMP_LTE        [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
+  ! COMP_GTE        [ reduce using rule 18 (expression -> var_usage ASSIGN_MULT expression .) ]
 
 
 state 62
 
-    (29) expression -> expression + expression .
+    (17) expression -> var_usage ASSIGN_SUB expression .
     (23) expression -> expression . BOOL_AND expression
     (24) expression -> expression . BOOL_OR expression
     (26) expression -> expression . - expression
@@ -2085,34 +2097,34 @@ state 62
     (35) expression -> expression . COMP_LTE expression
     (36) expression -> expression . COMP_GTE expression
 
-    BOOL_AND        reduce using rule 29 (expression -> expression + expression .)
-    BOOL_OR         reduce using rule 29 (expression -> expression + expression .)
-    -               reduce using rule 29 (expression -> expression + expression .)
-    +               reduce using rule 29 (expression -> expression + expression .)
-    COMP_EQU        reduce using rule 29 (expression -> expression + expression .)
-    COMP_NEQU       reduce using rule 29 (expression -> expression + expression .)
-    COMP_LESS       reduce using rule 29 (expression -> expression + expression .)
-    COMP_GTR        reduce using rule 29 (expression -> expression + expression .)
-    COMP_LTE        reduce using rule 29 (expression -> expression + expression .)
-    COMP_GTE        reduce using rule 29 (expression -> expression + expression .)
-    ;               reduce using rule 29 (expression -> expression + expression .)
-    )               reduce using rule 29 (expression -> expression + expression .)
-    ,               reduce using rule 29 (expression -> expression + expression .)
-    *               shift and go to state 31
-    /               shift and go to state 29
+    ,               reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .)
+    )               reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .)
+    ;               reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .)
+    BOOL_AND        shift and go to state 21
+    BOOL_OR         shift and go to state 24
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
-  ! *               [ reduce using rule 29 (expression -> expression + expression .) ]
-  ! /               [ reduce using rule 29 (expression -> expression + expression .) ]
-  ! BOOL_AND        [ shift and go to state 36 ]
-  ! BOOL_OR         [ shift and go to state 28 ]
-  ! -               [ shift and go to state 35 ]
-  ! +               [ shift and go to state 39 ]
-  ! COMP_EQU        [ shift and go to state 27 ]
-  ! COMP_NEQU       [ shift and go to state 32 ]
-  ! COMP_LESS       [ shift and go to state 38 ]
-  ! COMP_GTR        [ shift and go to state 33 ]
-  ! COMP_LTE        [ shift and go to state 37 ]
-  ! COMP_GTE        [ shift and go to state 34 ]
+  ! BOOL_AND        [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! BOOL_OR         [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! -               [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! *               [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! /               [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! +               [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! COMP_EQU        [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! COMP_NEQU       [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! COMP_LESS       [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! COMP_GTR        [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! COMP_LTE        [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
+  ! COMP_GTE        [ reduce using rule 17 (expression -> var_usage ASSIGN_SUB expression .) ]
 
 
 state 63
@@ -2134,18 +2146,18 @@ state 63
 
     )               reduce using rule 8 (non_empty_comma_sep_expr -> expression .)
     ,               shift and go to state 67
-    BOOL_AND        shift and go to state 36
-    BOOL_OR         shift and go to state 28
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
+    BOOL_AND        shift and go to state 21
+    BOOL_OR         shift and go to state 24
+    -               shift and go to state 23
+    *               shift and go to state 25
+    /               shift and go to state 26
+    +               shift and go to state 28
+    COMP_EQU        shift and go to state 20
+    COMP_NEQU       shift and go to state 22
+    COMP_LESS       shift and go to state 18
+    COMP_GTR        shift and go to state 27
+    COMP_LTE        shift and go to state 30
+    COMP_GTE        shift and go to state 29
 
 
 state 64
@@ -2157,39 +2169,30 @@ state 64
 
 state 65
 
-    (13) assign_declaration -> simple_declaration = expression .
-    (23) expression -> expression . BOOL_AND expression
-    (24) expression -> expression . BOOL_OR expression
-    (26) expression -> expression . - expression
-    (27) expression -> expression . * expression
-    (28) expression -> expression . / expression
-    (29) expression -> expression . + expression
-    (30) expression -> expression . COMP_EQU expression
-    (31) expression -> expression . COMP_NEQU expression
-    (33) expression -> expression . COMP_LESS expression
-    (34) expression -> expression . COMP_GTR expression
-    (35) expression -> expression . COMP_LTE expression
-    (36) expression -> expression . COMP_GTE expression
+    (37) expression -> ( expression ) .
 
-    ;               reduce using rule 13 (assign_declaration -> simple_declaration = expression .)
-    BOOL_AND        shift and go to state 36
-    BOOL_OR         shift and go to state 28
-    -               shift and go to state 35
-    *               shift and go to state 31
-    /               shift and go to state 29
-    +               shift and go to state 39
-    COMP_EQU        shift and go to state 27
-    COMP_NEQU       shift and go to state 32
-    COMP_LESS       shift and go to state 38
-    COMP_GTR        shift and go to state 33
-    COMP_LTE        shift and go to state 37
-    COMP_GTE        shift and go to state 34
+    ,               reduce using rule 37 (expression -> ( expression ) .)
+    BOOL_AND        reduce using rule 37 (expression -> ( expression ) .)
+    BOOL_OR         reduce using rule 37 (expression -> ( expression ) .)
+    -               reduce using rule 37 (expression -> ( expression ) .)
+    *               reduce using rule 37 (expression -> ( expression ) .)
+    /               reduce using rule 37 (expression -> ( expression ) .)
+    +               reduce using rule 37 (expression -> ( expression ) .)
+    COMP_EQU        reduce using rule 37 (expression -> ( expression ) .)
+    COMP_NEQU       reduce using rule 37 (expression -> ( expression ) .)
+    COMP_LESS       reduce using rule 37 (expression -> ( expression ) .)
+    COMP_GTR        reduce using rule 37 (expression -> ( expression ) .)
+    COMP_LTE        reduce using rule 37 (expression -> ( expression ) .)
+    COMP_GTE        reduce using rule 37 (expression -> ( expression ) .)
+    )               reduce using rule 37 (expression -> ( expression ) .)
+    ;               reduce using rule 37 (expression -> ( expression ) .)
 
 
 state 66
 
     (21) expression -> COMMAND_RANDOM ( expression ) .
 
+    ,               reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
     BOOL_AND        reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
     BOOL_OR         reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
     -               reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
@@ -2202,9 +2205,8 @@ state 66
     COMP_GTR        reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
     COMP_LTE        reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
     COMP_GTE        reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
-    ;               reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
     )               reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
-    ,               reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
+    ;               reduce using rule 21 (expression -> COMMAND_RANDOM ( expression ) .)
 
 
 state 67
@@ -2236,15 +2238,15 @@ state 67
     (37) expression -> . ( expression )
     (14) var_usage -> . ID
 
-    COMMAND_RANDOM  shift and go to state 9
-    VAL_LITERAL     shift and go to state 8
-    -               shift and go to state 14
-    (               shift and go to state 3
-    ID              shift and go to state 15
+    COMMAND_RANDOM  shift and go to state 10
+    VAL_LITERAL     shift and go to state 17
+    -               shift and go to state 7
+    (               shift and go to state 16
+    ID              shift and go to state 13
 
-    non_empty_comma_sep_expr       shift and go to state 69
-    var_usage                      shift and go to state 5
+    var_usage                      shift and go to state 12
     expression                     shift and go to state 63
+    non_empty_comma_sep_expr       shift and go to state 69
 
 state 68
 
