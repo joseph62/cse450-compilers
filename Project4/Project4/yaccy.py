@@ -89,7 +89,7 @@ def p_simple_declaration(p):
     variable.set_value("s{}".format(Tracker().get_var_num()))
     symbols.declare_variable(variable)
     Tracker().set_symbols(symbols) 
-    p[0] = variable.get_value()
+    p[0] = None
 
 def p_assign_declaration(p):
     """
