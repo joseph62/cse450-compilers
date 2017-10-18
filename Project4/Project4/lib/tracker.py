@@ -1,7 +1,7 @@
 #Name: Sean Joseph
 #Singleton tracker for global values
 
-from symbols import SymbolTable
+from .symbols import SymbolTable
 
 class Tracker:
     """
@@ -14,6 +14,7 @@ class Tracker:
             self.var_counter = 0
             self.if_counter = 0
             self.while_counter = 0
+            self.bool_counter = 0
             self.symbols = SymbolTable()
 
     instance = None
@@ -24,6 +25,11 @@ class Tracker:
 
     def reset(self):
         Tracker.instance = None
+
+    def get_bool_num(self):
+        unique_number = Tracker.instance.bool_counter 
+        Tracker.instance.bool_counter += 1 
+        return unique_number 
 
     def get_var_num(self):
         unique_number = Tracker.instance.var_counter 

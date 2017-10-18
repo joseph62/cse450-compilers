@@ -3,12 +3,9 @@ import sys
 import ply.lex as lex
 import ply.yacc as yacc
 
-from tracker import Tracker
-from node import *
-from variable import *
-from symbols import SymbolTable
-from lexy import *
-from yaccy import *
+from .lib.tracker import Tracker
+from .lib.yaccy import *
+from .lib.lexy import *
 
 # LEX RULEZ
 def generate_bad_code_from_string(input_):
@@ -24,6 +21,15 @@ def generate_bad_code_from_string(input_):
         raise
     Tracker().reset()
     return "\n".join(output) + "\n"
+
+def generate_tree_from_string(input_):
+    Tracker().reset()
+    Tracker()
+
+    lexer = lex.lex()
+    parser = yacc.yacc()
+    program = parser.parse(input_, lexer=lexer)
+    program.generate_tree()
 
 if __name__ == "__main__":
     source = sys.stdin.read()

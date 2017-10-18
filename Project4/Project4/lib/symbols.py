@@ -1,6 +1,6 @@
 #Name: Sean Joseph
 
-from variable import *
+from .variable import *
 
 class Table:
     """
@@ -10,6 +10,11 @@ class Table:
     
     def __init__(self):
         self._variables = {}
+
+    def __str__(self):
+        return str(self._variables)
+
+    __repr__ = __str__
 
     def __contains__(self,name):
         return name in self._variables
@@ -28,6 +33,12 @@ class SymbolTable:
         self._tables = [Table()]
         self._scope = 0
 
+    def __str__(self):
+        output = str(self._tables)
+        return output
+    
+    __repr__ = __str__
+
     def declare_variable(self,var):
         if var.get_name() in self._tables[-1]:
             raise NameError("Variable {} is already declared in scope {}!"
@@ -37,6 +48,7 @@ class SymbolTable:
 
     def deref_variable(self,name):
         for table in reversed(self._tables):
+            print(table)
             if name in table:
                 return table.deref_variable(name) 
         raise NameError("Variable {} used before declaration!".format(name))

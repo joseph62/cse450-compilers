@@ -1,9 +1,9 @@
 #Name: Sean Joseph
 #This is where my production rules are housed!
-from tracker import Tracker
-from variable import *
-from symbols import SymbolTable
-from node import *
+from .tracker import Tracker
+from .variable import *
+from .symbols import SymbolTable
+from .node import *
 
 precedence = (
             ('right','=' ,'ASSIGN_ADD' ,'ASSIGN_SUB' ,
@@ -15,6 +15,7 @@ precedence = (
             ('left','+', '-'),
             ('left','*','/'),
             ('nonassoc','UNARY_MINUS'),
+            ('nonassoc','UNARY_NOT'),
             )
 
 # YACC RULEZ 
@@ -37,6 +38,28 @@ def p_statements(p):
     if p[2] is not None:
         p[1].children.append(p[2])
     p[0] = p[1]
+
+def p_block_baby(p):
+    """
+    statement : scopeupbro '{' statements '}' 
+    """
+    symbols = Tracker().get_symbols()
+    print("Removing scope...")
+    symbols.remove_scope()
+    print(symbols)
+    Tracker().set_symbols(symbols)
+    p[0] = p[3]
+
+
+def p_scope_up_bro(p):
+    """
+    scopeupbro :
+    """
+    symbols = Tracker().get_symbols()
+    print("Adding scope...")
+    symbols.add_scope()
+    print(symbols)
+    Tracker().set_symbols(symbols) 
 
 def p_statement(p):
     """
@@ -77,7 +100,8 @@ def p_declaration(p):
     declaration : simple_declaration
                 | assign_declaration
     """
-    p[0] = p[1]
+    if isinstance(p[1],Node):
+        p[0] = p[1]
 
 def p_simple_declaration(p):
     """
@@ -85,11 +109,11 @@ def p_simple_declaration(p):
     """
     var_name = p[2]
     symbols = Tracker().get_symbols()
-    variable = ValVariable(var_name)
+    variable = Variable(var_name,p[1])
     variable.set_value("s{}".format(Tracker().get_var_num()))
     symbols.declare_variable(variable)
     Tracker().set_symbols(symbols) 
-    p[0] = None
+    p[0] = variable
 
 def p_assign_declaration(p):
     """
@@ -174,6 +198,13 @@ def p_val_literal_expression(p):
     """
     p[0] = ValLiteralNode(p[1])
 
+def p_char_literal_expression(p):
+    """
+    expression : CHAR_LITERAL
+    """
+    p[0] = CharLiteralNode(p[1])
+
+
 def p_arithmetic_expression_sub(p):
     """
     expression : expression '-' expression
@@ -212,11 +243,17 @@ def p_boolean_expression_inequality(p):
     """
     p[0] = InequalityNode(p[1],p[3])
 
-def p_boolean_expression_negation(p):
+def p_arithmetic_expression_negation(p):
     """
     expression : '-' expression %prec UNARY_MINUS
     """
     p[0] = NegateNode(p[2])
+
+def p_boolean_expression_negation(p):
+    """
+    expression : '!' expression %prec UNARY_NOT
+    """
+    p[0] = NotNode(p[2])
 
 def p_boolean_expression_less_than(p):
     """

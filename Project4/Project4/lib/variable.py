@@ -22,6 +22,12 @@ class Variable:
         self._scope = scope
         self._value = value
 
+    def __str__(self):
+        return "{} {} = {} ;({})".format(
+                self._data_type,self._name,self._value,self._scope)
+
+    __repr__ = __str__
+
     def get_name(self):
         return self._name
 

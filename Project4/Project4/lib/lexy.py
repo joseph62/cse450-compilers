@@ -38,7 +38,7 @@ def t_ID(t):
     return t
 
 def t_CHAR_LITERAL(t):
-    r'(\'.\'|\'\\t\'|\'\\\'\'|\'\\n\')'
+    r"('\\[\'tn]'|'\\\\'|'.')"
     return t
 
 def t_STRING_LITERAL(t):
@@ -98,4 +98,4 @@ def t_BOOL_OR(t):
     return t
 
 def t_error(t):
-    raise SyntaxError(t)
+    raise SyntaxError("Bad token: {}".format(t))
