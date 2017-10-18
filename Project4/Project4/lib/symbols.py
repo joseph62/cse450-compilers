@@ -48,7 +48,6 @@ class SymbolTable:
 
     def deref_variable(self,name):
         for table in reversed(self._tables):
-            print(table)
             if name in table:
                 return table.deref_variable(name) 
         raise NameError("Variable {} used before declaration!".format(name))
@@ -67,4 +66,7 @@ class SymbolTable:
     def remove_scope(self):
         self._tables.pop()
         self._scope -= 1
+
+    def is_global_scope(self):
+        return self._scope == 0
 

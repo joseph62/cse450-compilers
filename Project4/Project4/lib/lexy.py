@@ -8,6 +8,9 @@ special_words = {
         'print' : 'COMMAND_PRINT',
         'random' : 'COMMAND_RANDOM',
         'break' : 'COMMAND_BREAK',
+        'if' : 'COMMAND_IF',
+        'else' : 'COMMAND_ELSE',
+        'while' : 'COMMAND_WHILE',
 }
 
 tokens = ["ID","VAL_LITERAL","CHAR_LITERAL","STRING_LITERAL",

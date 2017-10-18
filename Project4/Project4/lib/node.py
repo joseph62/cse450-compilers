@@ -13,6 +13,12 @@ class Node:
         self.data = data
         self.name = name
 
+    def do_a_thing(self,operation):
+        terminate = operation(self)
+        if self.children is not None and not terminate:
+            for child in self.children:
+                child.do_a_thing(operation)
+
     def generate_tree(self,prefix=''):
         print("{}{}".format(prefix,self.name))
         if self.children is not None:
@@ -488,9 +494,7 @@ class UsageNode(Node):
     def __init__(self,data):
         super().__init__(name='UsageNode',data=data)
     def generate_bad_code(self,output):
-        tracker = Tracker()
-        result_var = tracker.get_symbols().deref_variable(self.data)
-        return result_var
+        return self.data
 
 class AssignmentNode(Node):
     """
@@ -540,3 +544,125 @@ class BlockNode(Node):
             child.generate_bad_code(output)
         output.append("#{} ending".format(self.name))
 
+class IfNode(Node):
+    """
+    A node to compile an if statement.
+    """
+    def __init__(self,expression,block):
+        super().__init__(name="IfNode",children=[expression,block])
+
+    def generate_bad_code(self,output):
+        output.append("#Start {}".format(self.name))
+        jump_man = "if_statement_{}".format(Tracker().get_if_num())
+        expression = self.children[0].generate_bad_code(output)
+        result_var = ValVariable("s{}".format(Tracker().get_var_num()))
+        result_var.set_value(result_var.get_name())
+
+        if expression.get_type() != 'val':
+            raise TypeError(
+                    "Unable to use type {} in if statement!".format(
+                        expression.get_type()))
+
+        output.append("test_nequ 0 {} {}".format(
+            expression.get_value(),result_var.get_value()))
+        output.append("jump_if_0 {} {}".format(result_var.get_value(),jump_man))
+        block = self.children[1].generate_bad_code(output)
+        output.append("{}: # Jump If".format(jump_man))
+        output.append("#End {}".format(self.name))
+
+class IfElseNode(Node):
+    """
+    A node to compile an if statement.
+    """
+    def __init__(self,expression,block_if,block_else):
+        super().__init__(name="IfNode",children=[expression,block_if,block_else])
+
+    def generate_bad_code(self,output):
+        output.append("#Start {}".format(self.name))
+        jump_num = Tracker().get_if_num()
+        jump_end_if = "if_statement_{}".format(jump_num)
+        jump_else = "else_statment_{}".format(jump_num)
+        expression = self.children[0].generate_bad_code(output)
+        result_var = ValVariable("s{}".format(Tracker().get_var_num()))
+        result_var.set_value(result_var.get_name())
+
+        if expression.get_type() != 'val':
+            raise TypeError(
+                    "Unable to use type {} in if statement!".format(
+                        expression.get_type()))
+
+        output.append("test_nequ 0 {} {}".format(
+            expression.get_value(),result_var.get_value()))
+        output.append("jump_if_0 {} {}".format(result_var.get_value(),jump_else))
+        block_if = self.children[1].generate_bad_code(output)
+        output.append("jump {}".format(jump_end_if))
+        output.append("{}: # Jump Else".format(jump_else))
+        block_else = self.children[2].generate_bad_code(output)
+        output.append("{}: # Jump If".format(jump_end_if))
+        output.append("#End {}".format(self.name))
+
+
+class WhileNode(Node):
+    """
+    A node to compile an while statement.
+    """
+    def __init__(self,expression,block):
+        super().__init__(name="WhileNode",children=[expression,block])
+
+    def generate_bad_code(self,output):
+        output.append("#Start {}".format(self.name))
+
+        while_num = Tracker().get_while_num()
+
+        jump_start = "while_statement_start_{}".format(while_num)
+        jump_end = "while_statement_end_{}".format(while_num)
+        
+        def operation(node):
+            if isinstance(node,WhileNode):
+                # return true to not iterate over children
+                return True
+            if isinstance(node,BreakNode):
+                # set jump tag for break statements within while
+                node.set_tag(jump_end)
+            return False 
+        self.children[1].do_a_thing(operation)
+
+        output.append("{}: # While start".format(jump_start))
+        expression = self.children[0].generate_bad_code(output)
+        result_var = ValVariable("s{}".format(Tracker().get_var_num()))
+        result_var.set_value(result_var.get_name())
+        while expression.get_type() != 'val':
+            raise TypeError(
+                    "Unable to use type {} in while statement!".format(
+                        expression.get_type()))
+        output.append("test_nequ 0 {} {}".format(
+            expression.get_value(),result_var.get_value()))
+        output.append("jump_if_0 {} {}".format(result_var.get_value(),jump_end))
+        block = self.children[1].generate_bad_code(output)
+        output.append("jump {}".format(jump_start))
+        output.append("{}: # While End".format(jump_end))
+        output.append("#End {}".format(self.name))
+
+class NoOpNode(Node):
+    """
+    I do nothing!
+    """
+    def __init__(self):
+        super().__init__(name="NoOpNode")
+
+    def generate_bad_code(self,output):
+        output.append("# LOL, I don't do anything! I'm a {}.".format(self.name))
+
+class BreakNode(Node):
+    """
+    BreakNode
+    """
+    def __init__(self):
+        super().__init__(name="BreakNode")
+        self.tag = None
+    def set_tag(self,tag):
+        self.tag = tag
+    def generate_bad_code(self,output):
+        if self.tag is None:
+            raise SyntaxError("Cannot break like this!")
+        output.append("jump {} # Break".format(self.tag))

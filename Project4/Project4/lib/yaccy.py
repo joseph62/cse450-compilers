@@ -16,6 +16,8 @@ precedence = (
             ('left','*','/'),
             ('nonassoc','UNARY_MINUS'),
             ('nonassoc','UNARY_NOT'),
+            ('nonassoc','LONE_IF'),
+            ('nonassoc','COMMAND_ELSE'),
             )
 
 # YACC RULEZ 
@@ -44,11 +46,15 @@ def p_block_baby(p):
     statement : scopeupbro '{' statements '}' 
     """
     symbols = Tracker().get_symbols()
-    print("Removing scope...")
     symbols.remove_scope()
-    print(symbols)
     Tracker().set_symbols(symbols)
     p[0] = p[3]
+
+def p_break_statement(p):
+    """
+    statement : COMMAND_BREAK ';'
+    """
+    p[0] = BreakNode()
 
 
 def p_scope_up_bro(p):
@@ -56,10 +62,14 @@ def p_scope_up_bro(p):
     scopeupbro :
     """
     symbols = Tracker().get_symbols()
-    print("Adding scope...")
     symbols.add_scope()
-    print(symbols)
     Tracker().set_symbols(symbols) 
+
+def p_empty_statement(p):
+    """
+    statement : ';'
+    """
+    p[0] = NoOpNode()
 
 def p_statement(p):
     """
@@ -121,11 +131,31 @@ def p_assign_declaration(p):
     """
     p[0] = AssignmentNode(p[1],p[3])
 
+def p_if_statement(p):
+    """
+    statement : COMMAND_IF '(' expression ')' statement %prec LONE_IF
+    """
+    p[0] = IfNode(p[3],p[5])
+
+def p_if_else_statement(p):
+    """
+    statement : COMMAND_IF '(' expression ')' statement COMMAND_ELSE statement
+    """
+    p[0] = IfElseNode(p[3],p[5],p[7])
+
+def p_while_statement(p):
+    """
+    statement : COMMAND_WHILE '(' expression ')' statement
+    """
+    p[0] = WhileNode(p[3],p[5]) 
+
 def p_var_usage(p):
     """
     var_usage : ID
     """
-    p[0] = UsageNode(p[1])
+    symbols = Tracker().get_symbols()
+    variable = symbols.deref_variable(p[1])
+    p[0] = UsageNode(variable)
 
 def p_assignment(p):
     """
