@@ -46,7 +46,7 @@ def t_CHAR_LITERAL(t):
     return t
 
 def t_STRING_LITERAL(t):
-    r'".*"'
+    r'"(\\\"|[^"])*"'
     return t
 
 def t_COMMENT(t):

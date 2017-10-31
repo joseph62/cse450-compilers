@@ -147,9 +147,8 @@ def t_COMMENT(t):
 
 
 def t_error(t):
-    global OUTPUT
-    OUTPUT += "Unknown token on line {}: {}".format(t.lexer.lineno, t.value[0])
-    exit(1)
+    error = "Unknown token on line {}: {}".format(t.lexer.lineno, t.value[0])
+    raise SyntaxError(error)
 
 def p_program(p):
     """
@@ -509,7 +508,7 @@ def execute_bad_instruction(instruction):
     if command == "ar_set_idx":
         array = lookup_value(instruction[1])
         idx = lookup_value(instruction[2])
-        value = lookup_value(instruction[2])
+        value = lookup_value(instruction[3])
         array[int(idx)] = value
     if command == "ar_get_size":
         array = lookup_value(instruction[1])

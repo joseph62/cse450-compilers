@@ -564,6 +564,27 @@ class UsageNode(Node):
     def generate_bad_code(self,output):
         return self.data
 
+class ArrayIndexNode(Node):
+    """
+    ArrayIndexNode
+    """
+    def __init__(self,data,child):
+        super().__init__(name='ArrayIndexNode',data=data,children=[child])
+    def generate_bad_code(self,output):
+        temp_var_value = "s{}".format(Tracker().get_var_num())
+        output.append("#Start {}".format(self.name))
+        index = self.children[0].generate_bad_code(output)
+        if index.get_type() != "val":
+            raise TypeError("Cannot index array with type {}".format(
+                index.get_type()))
+        var = ArrayElementVariable(temp_var_value,self.data.element_type.get_type(),
+                self.data.get_value(),index)
+        var.set_value(var.get_name())
+        output.append("ar_get_idx {} {} {}".format(
+            self.data.get_value(),index.get_value(),var.get_value()))
+        output.append("#End {}".format(self.name))
+        return var
+
 class AssignmentNode(Node):
     """
     AssignmentNode
@@ -575,7 +596,6 @@ class AssignmentNode(Node):
         output.append("#Start Assignment")
         child = self.children[0].generate_bad_code(output)
         if not child.same_type(self.data):
-            print(self.data)
             raise TypeError("Error cannot assign type {} to type {}".format(
                 child.get_type(),self.data.get_type()))
         if child.get_type() == 'array':
@@ -587,19 +607,70 @@ class AssignmentNode(Node):
         output.append("#End Assignment")
         return self.data
 
+class SizeMethodNode(Node):
+    """
+    SizeMethodNode
+    """
+    def __init__(self,data):
+        super().__init__(name='SizeMethodNode',data=data)
+
+    def generate_bad_code(self,output):
+        output.append("#Start SizeMethod")
+        var = self.data.generate_bad_code(output)
+        if 'size' not in var.get_methods():
+            raise TypeError("SizeMethod {} cannot be invoked on a {}".format(
+                method,var.get_type()))
+        result = ValVariable("s{}".format(Tracker().get_var_num()))
+        result.set_value(result.get_name())
+        output.append("ar_get_size {} {}".format(
+            var.get_value(),result.get_value()))
+        output.append("#End SizeMethod")
+        return result
+
+class ResizeMethodNode(Node):
+    """
+    ResizeMethodNode
+    """
+    def __init__(self,data,expression):
+        super().__init__(name='ResizeMethodNode',data=data,children=[expression])
+
+    def generate_bad_code(self,output):
+        output.append("#Start ResizeMethod")
+        var = self.data.generate_bad_code(output)
+        if 'resize' not in var.get_methods():
+            raise TypeError("ResizeMethod {} cannot be invoked on a {}".format(
+                method,var.get_type()))
+        child = self.children[0].generate_bad_code(output)
+        if child.get_type() != 'val':
+            raise TypeError("Resize must have expression of type val for an argument")
+
+        output.append("ar_set_size {} {}".format(
+            var.get_value(),child.get_value()))
+        output.append("#End ReresizeMethod")
+        return var
+
 class ExpressionAssignmentNode(Node):
     """
-    AssignmentNode
+    ExpressionAssignmentNode
     """
     def __init__(self,child1,child2):
-        super().__init__(name='AssignmentNode',children=[child1,child2])
+        super().__init__(name='ExpressionAssignmentNode',children=[child1,child2])
     def generate_bad_code(self,output):
         tracker = Tracker()
         output.append("#Start Expression Assignment")
         child1 = self.children[0].generate_bad_code(output)
         child2 = self.children[1].generate_bad_code(output)
-        output.append("val_copy {} {}".format(
-            child2.get_value(),child1.get_value()))
+        if not child1.same_type(child2):
+            raise TypeError("Error cannot assign type {} to type {}".format(
+                child1.get_type(),child2.get_type()))
+        if child1.is_reference():
+            output.append("ar_set_idx {} {} {}".format(
+                child1.array_name,child1.index.get_value(),child2.get_value()
+            ))
+        else:
+            output.append("val_copy {} {}".format(
+                child2.get_value(),child1.get_value()))
+        
         output.append("#End Expression Assignment")
         return child1
 

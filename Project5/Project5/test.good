@@ -1,2 +1,3 @@
-print("abcdefghijklmnopqrstuvwxyz");
+array(char) str = "aaa";
+str['a'];
 

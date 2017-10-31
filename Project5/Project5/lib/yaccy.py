@@ -18,6 +18,7 @@ precedence = (
             ('nonassoc','UNARY_NOT'),
             ('nonassoc','LONE_IF'),
             ('nonassoc','COMMAND_ELSE'),
+            ('left','.'),
             )
 
 # YACC RULEZ 
@@ -158,11 +159,37 @@ def p_var_usage(p):
     variable = symbols.deref_variable(p[1])
     p[0] = UsageNode(variable)
 
+def p_array_element_usage(p):
+    """
+    var_usage : ID '[' expression ']'
+    """
+    symbols = Tracker().get_symbols()
+    var = symbols.deref_variable(p[1])
+    if var.get_type() != 'array':
+        raise TypeError("Cannot index non array type variable {}".format(var.get_name()))
+    p[0] = ArrayIndexNode(var,p[3])
+
 def p_assignment(p):
     """
     expression : var_usage '=' expression
     """
     p[0] = ExpressionAssignmentNode(p[1],p[3])
+
+def p_method_expression(p):
+    """
+    expression : expression '.' ID '(' ')'
+    """
+    var = p[1]
+    p[0] = SizeMethodNode(var)
+
+def p_resize_method_expression(p):
+    """
+    expression : expression '.' ID '(' expression ')'
+    """
+    var = p[1]
+    child = p[5]
+    p[0] = ResizeMethodNode(var,child)
+
 
 def p_add_assign(p):
     """
@@ -222,10 +249,10 @@ def p_alias_type(p):
 
 def p_meta_type(p):
     """
-    type : META_TYPE '(' type ')'
+    type : META_TYPE '(' TYPE ')'
     """
-    
-    p[0] = ArrayVariable("",p[3])
+    sub_var = Variable("",p[3])
+    p[0] = ArrayVariable("",sub_var)
 
 def p_boolean_and(p):
     """
