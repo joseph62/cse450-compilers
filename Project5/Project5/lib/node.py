@@ -44,10 +44,30 @@ class PrintNode(Node):
                 output.append("out_val {}".format(var.get_value()))
                 #TODO implement print array
             elif var.get_type() == 'array':
-                if var.element_type() == 'char':
-                    pass
-                elif var.element_type() == 'var':
-                    pass
+                arr_size = "s{}".format(Tracker().get_var_num())
+                track = "s{}".format(Tracker().get_var_num())
+                compare = "s{}".format(Tracker().get_var_num())
+                temp = "s{}".format(Tracker().get_var_num())
+                label_num = Tracker().get_while_num()
+                start_label = "start_print_label_{}".format(label_num)
+                end_label = "end_print_label_{}".format(label_num)
+                output.append("ar_get_size {} {}".format(
+                    var.get_value(),arr_size))
+                output.append("val_copy 0 {}".format(track))
+                output.append("{}:".format(start_label))
+                output.append("test_equ {} {} {}".format(
+                    arr_size,track,compare))
+                output.append("jump_if_n0 {} {}".format(
+                    compare,end_label)) 
+                output.append("ar_get_idx {} {} {}".format(
+                    var.get_value(),track,temp))
+                if var.element_type.get_type() == 'char':
+                    output.append("out_char {}".format(temp))
+                elif var.element_type.get_type() == 'val':
+                    output.append("out_val {}".format(temp))
+                output.append("add 1 {} {}".format(track,track))
+                output.append("jump {}".format(start_label))
+                output.append("{}:".format(end_label))
         output.append("out_char '\\n'")
         output.append("#End PrintNode")
 
@@ -94,10 +114,13 @@ class StringLiteralNode(Node):
 
     def generate_bad_code(self,output):
         tracker = Tracker()
-        temp_var = ArrayVariable("a{}".format(tracker.get_var_num()),"char")
+        temp_var = ArrayVariable(
+            "a{}".format(tracker.get_var_num()),CharVariable("")
+        )
         temp_var.set_value(temp_var.get_name())
         characters = list(self.data)
-
+        characters.pop(0)
+        characters.pop()
         result = []
         while len(characters)>0:
             character = characters.pop(0)
@@ -113,11 +136,14 @@ class StringLiteralNode(Node):
                 result.append(character)
 
         arr_size = len(result)
+        output.append("# Starting {}".format(self.name))
         output.append("ar_set_size {} {}".format(temp_var.get_value(),arr_size))
-
+        temp = "s{}".format(Tracker().get_var_num())
         for index,character in enumerate(result):
-            output.append("ar_set_idx {} {} '{}'".format(
-                temp_var.get_value(),index,character))
+            output.append("val_copy '{}' {}".format(character,temp))
+            output.append("ar_set_idx {} {} {}".format(
+                temp_var.get_value(),index,temp))
+        output.append("# Ending {}".format(self.name))
 
         return temp_var
         
@@ -549,11 +575,12 @@ class AssignmentNode(Node):
         output.append("#Start Assignment")
         child = self.children[0].generate_bad_code(output)
         if not child.same_type(self.data):
+            print(self.data)
             raise TypeError("Error cannot assign type {} to type {}".format(
                 child.get_type(),self.data.get_type()))
         if child.get_type() == 'array':
             output.append("ar_copy {} {}".format(
-                child.get_value(),self.data.get_type()))
+                child.get_value(),self.data.get_value()))
         else:
             output.append("val_copy {} {}".format(
                 child.get_value(),self.data.get_value()))

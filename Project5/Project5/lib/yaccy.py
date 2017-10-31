@@ -217,7 +217,7 @@ def p_alias_type(p):
     alias = p[1]
     var = None
     if alias == "string":
-        var = ArrayVariable("","char")
+        var = ArrayVariable("",CharVariable(""))
     p[0] = var
 
 def p_meta_type(p):

@@ -23,7 +23,7 @@ class Variable:
         self._value = value
 
     def __str__(self):
-        return "{} {} = {} ;({})".format(
+        return "{} {} = {} ;scope:{}".format(
                 self._data_type,self._name,self._value,self._scope)
 
     __repr__ = __str__
@@ -82,6 +82,13 @@ class ArrayVariable(Variable):
         super().__init__(name,"array")
         self.element_type  = element_type
 
+    def __str__(self):
+        return "{}({}) {} = {} ;scope:{}".format(
+                self._data_type,self.element_type,self._name,self._value,self._scope)
+
+    __repr__ = __str__
+
+
     def get_element_type(self):
         return self.element_type
 
@@ -89,8 +96,5 @@ class ArrayVariable(Variable):
         return "a{}"
 
     def same_type(self,other):
-
-        if self.get_element_type() != other.get_element_type():
-            return False
-
-        return True
+        return (super().same_type(other) and 
+                self.element_type.same_type(other.element_type))

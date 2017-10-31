@@ -1,2 +1,2 @@
-array(char) x = "123'\"\\\n\t";
-string y = x;
+print("abcdefghijklmnopqrstuvwxyz");
+
