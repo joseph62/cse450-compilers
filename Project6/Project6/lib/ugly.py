@@ -24,6 +24,29 @@ def compile_out(tokens,output,command):
     else:
         output.append("{} {}".format(command,value))
 
+def compile_conditional_jump(tokens,output):
+    command = tokens[0]
+    value = tokens[1]
+    tag = tokens[2]
+
+    if value.startswith("s"):
+        value = value.replace("s","")
+        output.append("load {} regA".format(value))
+        value = "regA"
+    output.append("{} {} {}".format(command,value,tag))
+
+def compile_random(tokens,output):
+    argument = tokens[1]
+    destination = tokens[2]
+    if argument.startswith("s"):
+        argument = argument.replace("s","")
+        output.append("load {} regA".format(argument))
+        argument = "regA"
+    output.append("random {} regB".format(argument))
+    if destination.startswith("s"):
+        destination = destination.replace("s","") 
+    output.append("store {} {}".format("regB",destination))
+
 def compile_arith(tokens,output):
     command = tokens[0]
     left = tokens[1]
@@ -56,8 +79,20 @@ def compile_ugly_command(tokens,output):
         compile_out(tokens,output,command)
     elif command in arith:
         compile_arith(tokens,output)
+    elif command == "jump":
+        output.append(" ".join(tokens))
+    elif command.startswith("jump"):
+        # jump_if_0 and jump_if_n0
+        compile_conditional_jump(tokens,output)
+    elif command == "random":
+        compile_random(tokens,output)
+    elif command.endswith(":"):
+        # Tag, just pass through
+        output.append(" ".join(tokens))
+    elif command == "":
+        output.append("# Empty line")
     else:
-        output.append("#Failed to compile line command: {}".format(command))
+        output.append("# Failed to compile line command: {}".format(command))
 
 def compile_ugly_lines(lines):
     output = []

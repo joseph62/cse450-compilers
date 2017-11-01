@@ -7,4 +7,5 @@ from Project6.bad_interpreter import run_bad_code_from_string
 
 source = sys.stdin.read()
 output = generate_ugly_code_from_string(source)
+#output = generate_bad_code_from_string(source)
 print(output)
