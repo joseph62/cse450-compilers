@@ -11,10 +11,10 @@ class Tracker:
 
     class _Tracker:
         def __init__(self):
-            self.var_counter = 0
-            self.if_counter = 0
-            self.while_counter = 0
-            self.bool_counter = 0
+            self.var_counter = 1
+            self.if_counter = 1
+            self.while_counter = 1
+            self.bool_counter = 1
             self.symbols = SymbolTable()
 
     instance = None

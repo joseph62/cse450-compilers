@@ -1,2 +1,2 @@
-print(random(100));
-
+array(char) str = "testing";
+str.resize(4);

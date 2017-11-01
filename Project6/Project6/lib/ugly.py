@@ -68,7 +68,74 @@ def compile_arith(tokens,output):
     output.append("{} regA regB regA".format(command))
     output.append("store regA {}".format(result.replace("s","")))
 
-def compile_ugly_command(tokens,output):
+def compile_array_get_size(tokens,output):
+    array = tokens[1].replace("a","")
+    mem = tokens[2].replace("s","")
+    output.append("load {} regA".format(array))
+    output.append("mem_copy regA {}".format(mem))
+
+def compile_array_set_size(tokens,output,counter):
+    array = tokens[1].replace("a","")
+    mem = tokens[2].replace("s","")
+    output.append("load {} regA".format(array))
+    output.append("load {} regB".format(mem))
+    output.append("load regA regC")
+    output.append("store regB regA")
+    output.append("test_lte regB regC regD")
+    output.append("jump_if_n0 regD resize_end_{}".format(counter))
+    output.append("load 0 regD")
+    output.append("add regD 1 regE")
+    output.append("add regE regB regE")
+    output.append("store regE 0")
+    output.append("store regD {}".format(array))
+    output.append("store regB regD")
+    output.append("resize_start_{}:".format(counter))
+    output.append("add regA 1 regA")
+    output.append("add regD 1 regD")
+    output.append("test_gtr regD regE regF")
+    output.append("jump_if_n0 regF resize_end_{}".format(counter))
+    output.append("mem_copy regA regD")
+    output.append("jump resize_start_{}:".format(counter))
+
+
+def compile_array_get_index(tokens,output):
+    array = tokens[1].replace("a","")
+    index = tokens[2]
+    destination = tokens[3]
+
+    output.append("load {} regA".format(array))
+
+    if index.startswith("s"):
+        index = index.replace("s","")
+        output.append("load {} regB".format(index))
+        index = "regB"
+
+    if destination.startswith("s"):
+        destination = destination.replace("s","")
+
+    output.append("add regA {} regA".format(index))
+    output.append("mem_copy regA {}".format(destination))
+
+def compile_array_set_index(tokens,output):
+    array = tokens[1].replace("a","")
+    index = tokens[2]
+    source = tokens[3]
+
+    output.append("load {} regA".format(array))
+
+    if index.startswith("s"):
+        index = index.replace("s","")
+        output.append("load {} regB".format(index))
+        index = "regB"
+
+    if source.startswith("s"):
+        source = source.replace("s","")
+
+    output.append("add regA {} regA".format(index))
+    output.append("mem_copy {} regA".format(source))
+
+
+def compile_ugly_command(tokens,output,counter):
     command = tokens[0]
     arith = ["add","sub","mult","div","test_gtr",
             "test_less","test_gte","test_lte",
@@ -89,13 +156,23 @@ def compile_ugly_command(tokens,output):
     elif command.endswith(":"):
         # Tag, just pass through
         output.append(" ".join(tokens))
+    elif command == "ar_get_size":
+        compile_array_get_size(tokens,output)
+    elif command == "ar_set_size":
+        compile_array_set_size(tokens,output,counter)
+        counter += 1
+    elif command == "ar_set_idx":
+        compile_array_set_index(tokens,output)
+    elif command == "ar_get_idx":
+        compile_array_get_index(tokens,output)
     elif command == "":
         output.append("# Empty line")
     else:
         output.append("# Failed to compile line command: {}".format(command))
 
 def compile_ugly_lines(lines):
-    output = []
+    output = ["store 100000 0"]
+    counter = 0
     for line in lines:
         # Process ' ' properly
         if "' '" in line:
@@ -108,6 +185,7 @@ def compile_ugly_lines(lines):
             #Skip comment lines
             continue
         output.append("# Interpreting: {}".format(line))
-        compile_ugly_command(tokens,output)
+        compile_ugly_command(tokens,output,counter)
+        counter += 1
         output.append("# Done Interpreting: {}".format(line))
     return output
