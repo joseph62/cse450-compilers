@@ -85,47 +85,48 @@ def compile_array_set_size(tokens,output,counter):
     else:
         output.append("val_copy {} regB".format(mem))
 
-    output.append("test_equ regA 0 regC")
-    output.append("jump_if_n0 regC init_array_{}".format(counter))
-
-    output.append("load regA regC")
-    output.append("store regB regA")
-    output.append("test_lte regB regC regD")
-    output.append("jump_if_0 regD resize_end_{}".format(counter))
-    output.append("load 0 regD")
-    output.append("add regD 1 regE")
-    output.append("add regE regB regE")
-    output.append("store regE 0")
-    output.append("store regD {}".format(array))
-    output.append("store regB regD")
-    output.append("resize_start_{}:".format(counter))
-    output.append("add regA 1 regA")
-    output.append("add regD 1 regD")
-    output.append("test_gtr regD regE regF")
-    output.append("jump_if_n0 regF resize_end_{}".format(counter))
-    output.append("mem_copy regA regD")
-    output.append("jump resize_start_{}".format(counter))
-
-    output.append("init_array_{}:".format(counter))
-    output.append("mem_copy 0 {}".format(array))
     output.append("load 0 regC")
-    output.append("store regB regC")
-    output.append("add regB 1 regB")
     output.append("add regB regC regD")
+    output.append("add regD 1 regD")
     output.append("store regD 0")
     output.append("store regC {}".format(array))
+    output.append("store regB regC")
 
+    # regA: pointer to array
+    # regB: new size
+    # regC: pointer to new array area
+
+    output.append("test_equ regA 0 regD")
+    output.append("jump_if_n0 regD resize_end_{}".format(counter))
+
+    output.append("load regA regE")
+    output.append("test_less regE regB regF")
+    output.append("jump_if_0 regF resize_done_setting_bound_{}".format(counter))
+    output.append("val_copy regE regB")
+    output.append("resize_done_setting_bound_{}:".format(counter))
+    output.append("add regA 1 regA")
+    output.append("add regC 1 regC")
+    output.append("val_copy 1 regD")
+    output.append("resize_start_{}:".format(counter))
+    output.append("test_lte regD regB regE")
+    output.append("jump_if_0 regE resize_end_{}".format(counter))
+    output.append("mem_copy regA regC")
+    output.append("add regA 1 regA")
+    output.append("add regC 1 regC")
+    output.append("add regD 1 regD")
+    output.append("jump resize_start_{}".format(counter))
 
     output.append("resize_end_{}:".format(counter))
 
 def compile_array_copy(tokens,output,counter):
 
     source = tokens[1].replace("a","")
-    destination = tokens[1].replace("a","")
+    destination = tokens[2].replace("a","")
 
     output.append("load {} regA".format(source))
     output.append("load regA regB")
     output.append("load 0 regC")
+    # Put new array pointer in destination
     output.append("store regC {}".format(destination))
     output.append("add regC regB regD")
     output.append("add regD 1 regD")
@@ -139,10 +140,6 @@ def compile_array_copy(tokens,output,counter):
     output.append("test_lte regD regB regE")
     output.append("jump_if_0 regE end_array_copy_{}".format(counter))
     output.append("mem_copy regA regC")
-    output.append("out_val regA")
-    output.append("out_char ' '")
-    output.append("out_val regC")
-    output.append("out_char '\\n'")
     output.append("add regA 1 regA")
     output.append("add regC 1 regC")
     output.append("add regD 1 regD")

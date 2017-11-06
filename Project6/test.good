@@ -1,2 +1,10 @@
-string str = "hi";
-string wut = str;
+array(val) x;
+x.resize(4);
+x[0] = 7;
+x[1] = 8;
+x[3] = 9;
+x[2] = 5;
+x.resize(15);
+print("Size of x: ", x.size());
+print("Contents of x: ", x);
+
