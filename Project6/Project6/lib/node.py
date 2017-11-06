@@ -44,6 +44,7 @@ class PrintNode(Node):
                 output.append("out_val {}".format(var.get_value()))
                 #TODO implement print array
             elif var.get_type() == 'array':
+                output.append("# Printing an array...")
                 arr_size = "s{}".format(Tracker().get_var_num())
                 track = "s{}".format(Tracker().get_var_num())
                 compare = "s{}".format(Tracker().get_var_num())
@@ -51,6 +52,7 @@ class PrintNode(Node):
                 label_num = Tracker().get_while_num()
                 start_label = "start_print_label_{}".format(label_num)
                 end_label = "end_print_label_{}".format(label_num)
+
                 output.append("ar_get_size {} {}".format(
                     var.get_value(),arr_size))
                 output.append("val_copy 0 {}".format(track))
@@ -667,6 +669,10 @@ class ExpressionAssignmentNode(Node):
             output.append("ar_set_idx {} {} {}".format(
                 child1.array_name,child1.index.get_value(),child2.get_value()
             ))
+        elif child1.get_type() == 'array':
+            output.append("ar_copy {} {}".format(
+                child2.get_value(),child1.get_value()))
+
         else:
             output.append("val_copy {} {}".format(
                 child2.get_value(),child1.get_value()))

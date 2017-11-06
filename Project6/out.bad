@@ -1,0 +1,12 @@
+#BlockNode beginning
+#Start ResizeMethod
+val_copy 4.0 s2
+ar_set_size a1 s2
+#End ReresizeMethod
+#Start PrintNode
+val_copy 'a' s3
+out_char s3
+out_char '\n'
+#End PrintNode
+#BlockNode ending
+

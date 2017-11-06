@@ -1,2 +1,2 @@
-array(char) str = "testing";
-str.resize(4);
+string str = "hi";
+string wut = str;
