@@ -3,7 +3,8 @@
 import sys
 import ply.lex as lex
 import ply.yacc as yacc
-from data import *
+from lib.data import *
+
 
 literals = ':'
 
@@ -165,19 +166,19 @@ def p_array_variable(p):
     """
     value : ARRAY_VARIABLE
     """
-    p[0] = ArrayData(p[1])
+    p[0] = Data(p[1],ArrayType())
 
 def p_val_literal(p):
     """
     value : VAL_LITERAL 
     """
-    p[0] = ValData(p[1])
+    p[0] = Data(p[1],ValType())
 
 def p_char_literal(p):
     """
     value : CHAR_LITERAL 
     """
-    p[0] = CharData(p[1])
+    p[0] = Data(p[1],CharType())
 
 def p_error(p):
     raise Exception("Parsing Error Occured! Result: {}".format(p))
