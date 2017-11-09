@@ -1,0 +1,4 @@
+string test = "Hello, World!";
+test.resize(4);
+print(test);
+
