@@ -734,15 +734,14 @@ class ResizeMethodNode(Node):
             raise TypeError("Resize must have expression of type val for an argument") 
         expr = expr.get_value()
         value = var.get_value()
+        if isinstance(value,str):
+            value = []
         if expr < len(value):
             value = value[:expr]
         elif expr > len(value):
             diff = expr - len(value)
             while diff > 0:
-                if isinstance(value,str):
-                    value = value + "0"
-                else:
-                    value.append(0)
+                value.append(0)
                 diff -= 1
         var.set_value(value)
         return var
@@ -781,8 +780,11 @@ class ExpressionAssignmentNode(Node):
             raise TypeError("Error cannot assign type {} to type {}".format(
                 child1.get_type(),child2.get_type()))
         if child1.is_reference():
-            value = tracker.get_symbols()[child1.array_name]
-            value[child1.index.get_value()] = child2.get_value()
+            array = child1.array_name
+            newvalue = child2.get_value()
+            index = child1.index.get_value()
+            array[index] = newvalue
+            return child2
         else:
             child1.set_value(child2.get_value())
         return child1

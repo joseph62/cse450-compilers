@@ -1,4 +1,5 @@
-string test = "Hello, World!";
-test.resize(4);
-print(test);
-
+string x = "abcdef";
+x.resize(3);
+print(x);
+x[0] = x[1] = x[2] = 'd';
+print(x);

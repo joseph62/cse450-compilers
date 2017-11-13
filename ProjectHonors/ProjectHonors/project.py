@@ -12,7 +12,7 @@ def generate_bad_code_from_string(input_):
     Tracker()
     try:
         lexer = lex.lex()
-        parser = yacc.yacc()
+        parser = yacc.yacc(debug=False,errorlog=yacc.NullLogger())
         program = parser.parse(input_, lexer=lexer)
         output = []
         program.generate_bad_code(output)
@@ -26,7 +26,7 @@ def generate_output_from_string(input_):
     Tracker()
     try:
         lexer = lex.lex()
-        parser = yacc.yacc()
+        parser = yacc.yacc(debug=False,errorlog=yacc.NullLogger())
         program = parser.parse(input_, lexer=lexer)
         output = []
         program.execute_good_code(output)
@@ -42,7 +42,7 @@ def generate_tree_from_string(input_):
     Tracker()
 
     lexer = lex.lex()
-    parser = yacc.yacc()
+    parser = yacc.yacc(debug=False,errorlog=yacc.NullLogger())
     program = parser.parse(input_, lexer=lexer)
     program.generate_tree()
 
