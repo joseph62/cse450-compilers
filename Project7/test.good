@@ -1,0 +1,4 @@
+val x = 2;
+define val echo(val x) print(2);
+
+print(x);

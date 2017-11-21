@@ -26,11 +26,7 @@ class Node:
                 child.generate_tree("."+prefix)
 
     def generate_bad_code(self,output):
-        raise NotImplementedError("{} does not compile!".format(self.name))
-
-    def execute_good_code(self,output):
-        raise NotImplementedError("{} does not execute!".format(self.name))
-
+        raise NotImplementedError()
 
 class PrintNode(Node):
     """
@@ -38,7 +34,6 @@ class PrintNode(Node):
     """
     def __init__(self,children):
         super().__init__(name="PrintNode",children=children)
-
     def generate_bad_code(self,output):
         output.append("#Start PrintNode")
         for child in self.children:
@@ -49,6 +44,7 @@ class PrintNode(Node):
                 output.append("out_val {}".format(var.get_value()))
                 #TODO implement print array
             elif var.get_type() == 'array':
+                output.append("# Printing an array...")
                 arr_size = "s{}".format(Tracker().get_var_num())
                 track = "s{}".format(Tracker().get_var_num())
                 compare = "s{}".format(Tracker().get_var_num())
@@ -56,6 +52,7 @@ class PrintNode(Node):
                 label_num = Tracker().get_while_num()
                 start_label = "start_print_label_{}".format(label_num)
                 end_label = "end_print_label_{}".format(label_num)
+
                 output.append("ar_get_size {} {}".format(
                     var.get_value(),arr_size))
                 output.append("val_copy 0 {}".format(track))
@@ -76,37 +73,6 @@ class PrintNode(Node):
         output.append("out_char '\\n'")
         output.append("#End PrintNode")
 
-    def execute_good_code(self,output):
-        outstr = "" 
-        for child in self.children:
-            var = child.execute_good_code(output)
-            value = var.get_value()
-                #TODO implement print array
-            if var.get_type() == 'array':
-                for elem in value:
-                    if elem == "\\t":
-                        elem = "\t"
-                    elif elem == "\\n":
-                        elem = "\n"
-                    elif elem == "\\\\":
-                        elem = "\\"
-                    elif elem == "\\'":
-                        elem = "'"
-                    outstr = outstr + str(elem)
-            else:
-                if value == "\\t":
-                    value = "\t"
-                elif value == "\\n":
-                    value = "\n"
-                elif value == "\\\\":
-                    value = "\\"
-                elif value == "\\'":
-                    value = "'"
-                outstr = outstr + str(value)
-        outstr = outstr + "\n"
-        output.append(outstr) 
-        
-
 class ValLiteralNode(Node):
     """
     ValLiteralNode will be bad code that generates Bad code
@@ -124,19 +90,6 @@ class ValLiteralNode(Node):
         output.append("val_copy {} {}".format(self.data, temp_var.get_value()))
         return temp_var
 
-    def execute_good_code(self,output):
-        tracker = Tracker()
-        temp_var = ValVariable("s{}".format(tracker.get_var_num()))
-        fdata = float(self.data)
-        idata = int(self.data)
-        if fdata == idata:
-            temp_var.set_value(idata)
-        else:
-            temp_var.set_value(fdata)
-
-        return temp_var
-
-
 class CharLiteralNode(Node):
     """
     CharLiteralNode will be bad code that generates Bad code
@@ -152,18 +105,6 @@ class CharLiteralNode(Node):
         temp_var = CharVariable("s{}".format(tracker.get_var_num()))
         temp_var.set_value(temp_var.get_name())
         output.append("val_copy {} {}".format(self.data, temp_var.get_value()))
-        return temp_var
-
-    def execute_good_code(self,output):
-        tracker = Tracker()
-        temp_var = CharVariable("s{}".format(tracker.get_var_num()))
-        value = self.data
-        value = list(value)
-        value.pop(0)
-        value.pop()
-        value = "".join(value)
-        temp_var.set_value(value)
-
         return temp_var
 
 class StringLiteralNode(Node):
@@ -208,75 +149,17 @@ class StringLiteralNode(Node):
 
         return temp_var
         
-    def execute_good_code(self,output):
-        tracker = Tracker()
-        temp_var = ArrayVariable(
-            "a{}".format(tracker.get_var_num()),CharVariable("element")
-        )
-        characters = list(self.data)
-        characters.pop(0)
-        characters.pop()
-        result = []
-        while len(characters)>0:
-            character = characters.pop(0)
-            if character == "\\":
-                escape = characters.pop(0)
-                if escape == "\"":
-                    result.append("\"")
-                else:
-                    result.append(character + escape)
-            elif character == "'":
-                result.append("\\'")
-            else:
-                result.append(character)
-        temp_var.set_value(result)
 
-        return temp_var
-        
-class ArithmeticNode(Node):
+class AdditionNode(Node):
     """
-    ArithmeticNode : +-/*
+    AdditionNode
     """
-    def __init__(self,operator,child1,child2):
-        self._operator = operator
-        super().__init__(name='ArithmeticNode',children=[child1,child2])
-
-    def get_bad_operator(self):
-        if self._operator == '+':
-            return 'add'
-        elif self._operator == '-':
-            return 'sub'
-        elif self._operator == '/':
-            return 'div'
-        elif self._operator == '*':
-            return 'mult'
-        else:
-            raise TypeError("Arithmetic operator {} invalid!".format(
-                self._operator
-                ))
-
-    def execute_good_operator(self,left,right):
-        if self._operator == '+':
-            return left.get_value() + right.get_value()
-        elif self._operator == '-':
-            return left.get_value() - right.get_value()
-        elif self._operator == '/':
-            value = left.get_value() / right.get_value()
-            ivalue = int(value)
-            fvalue = float(value)
-            if ivalue == fvalue:
-                return ivalue
-            return fvalue
-        elif self._operator == '*':
-            return left.get_value() * right.get_value()
-        else:
-            raise TypeError("Arithmetic operator {} invalid!".format(
-                self._operator
-                ))
+    def __init__(self,child1,child2):
+        super().__init__(name='AdditionNode',children=[child1,child2])
 
     def generate_bad_code(self,output):
         tracker = Tracker()
-        output.append("#Start {}".format(self.name))
+        output.append("#Start AdditionNode")
         child1 = self.children[0].generate_bad_code(output)
         child2 = self.children[1].generate_bad_code(output)
         if child1.get_type() == 'char' or child2.get_type() == 'char':
@@ -288,22 +171,97 @@ class ArithmeticNode(Node):
                 child1.get_type(),child2.get_type()))
         result_var = ValVariable("s{}".format(tracker.get_var_num()))
         result_var.set_value(result_var.get_name())
-        output.append("{} {} {} {}".format(
-            self.get_bad_operator(),child1.get_value(),
-            child2.get_value(),result_var.get_value()))
-        output.append("#End {}".format(self.name))
+        output.append("add {} {} {}".format(
+            child1.get_value(),child2.get_value(),result_var.get_value()))
+        output.append("#End AdditionNode")
         return result_var
 
-    def execute_good_code(self,output):
+
+class SubtractionNode(Node):
+    """
+    SubtractionNode
+    """
+    def __init__(self,child1,child2):
+        super().__init__(name='SubtractionNode',children=[child1,child2])
+
+    def generate_bad_code(self,output):
         tracker = Tracker()
-        child1 = self.children[0].execute_good_code(output)
-        child2 = self.children[1].execute_good_code(output)
-        if child1.get_type() != 'val' or child2.get_type() != 'val':
+        output.append("#Start SubtractionNode")
+        child1 = self.children[0].generate_bad_code(output)
+        child2 = self.children[1].generate_bad_code(output)
+
+        if child1.get_type() == 'char' or child2.get_type() == 'char':
             raise TypeError(
                 "Error: cannot use type {} in addition expressions!".format(
-                    child1.get_type())) 
+                    child1.get_type()))
+        if not child1.same_type(child2):
+            raise TypeError("Error: Cannot subtract a {} and a {}!".format(
+                child1.get_type(),child2.get_type()))
+
         result_var = ValVariable("s{}".format(tracker.get_var_num()))
-        result_var.set_value(self.execute_good_operator(child1,child2))
+        result_var.set_value(result_var.get_name())
+        output.append("sub {} {} {}".format(
+            child1.get_value(),child2.get_value(),result_var.get_value()))
+        output.append("#End SubtractionNode")
+        return result_var
+
+
+class DivisionNode(Node):
+    """
+    DivisionNode
+    """
+    def __init__(self,child1,child2):
+        super().__init__(name='DivisionNode',children=[child1,child2])
+
+    def generate_bad_code(self,output):
+        tracker = Tracker()
+        output.append("#Start DivisionNode")
+        child1 = self.children[0].generate_bad_code(output)
+        child2 = self.children[1].generate_bad_code(output)
+
+        if child1.get_type() == 'char' or child2.get_type() == 'char':
+            raise TypeError(
+                "Error: cannot use type {} in addition expressions!".format(
+                    child1.get_type()))
+        if not child1.same_type(child2):
+            raise TypeError("Error: Cannot divide a {} and a {}!".format(
+                child1.get_type(),child2.get_type()))
+
+        result_var = ValVariable("s{}".format(tracker.get_var_num()))
+        result_var.set_value(result_var.get_name())
+        output.append("div {} {} {}".format(
+            child1.get_value(),child2.get_value(),result_var.get_value()))
+
+        output.append("#End DivisionNode")
+        return result_var
+
+class MultiplicationNode(Node):
+    """
+    MultiplicationNode
+    """
+    def __init__(self,child1,child2):
+        super().__init__(name='MultiplicationNode',children=[child1,child2])
+
+    def generate_bad_code(self,output):
+        tracker = Tracker()
+        output.append("#Start MultiplicationNode")
+        child1 = self.children[0].generate_bad_code(output)
+        child2 = self.children[1].generate_bad_code(output)
+
+        if child1.get_type() == 'char' or child2.get_type() == 'char':
+            raise TypeError(
+                "Error: cannot use type {} in addition expressions!".format(
+                    child1.get_type()))
+        if not child1.same_type(child2):
+            raise TypeError("Error: Cannot multiply a {} and a {}!".format(
+                child1.get_type(),child2.get_type()))
+
+        result_var = ValVariable("s{}".format(tracker.get_var_num()))
+        result_var.set_value(result_var.get_name())
+        output.append("mult {} {} {}".format(
+            child1.get_value(),child2.get_value(),result_var.get_value()))
+
+        output.append("#End MultiplicationNode")
         return result_var
 
 class NotNode(Node):
@@ -328,19 +286,6 @@ class NotNode(Node):
         output.append("#End NotNode")
         return result_var
 
-    def execute_good_code(self,output):
-        tracker = Tracker()
-        child = self.children[0].execute_good_code(output)
-        if child.get_type() != 'val':
-            raise TypeError(
-                "Error: cannot use type {} in addition expressions!".format(
-                    child.get_type())) 
-        result_var = ValVariable("s{}".format(tracker.get_var_num()))
-        value = child.get_value()
-        result_var.set_value(0 if value == 0 else 1)
-        return result_var
-
-
 
 class NegateNode(Node):
     """
@@ -364,68 +309,16 @@ class NegateNode(Node):
         output.append("#End NegateNode")
         return result_var
 
-    def execute_good_code(self,output):
-        tracker = Tracker()
-        child = self.children[0].execute_good_code(output)
-        if child.get_type() != 'val':
-            raise TypeError(
-                "Error: cannot use type {} in addition expressions!".format(
-                    child.get_type())) 
-        result_var = ValVariable("s{}".format(tracker.get_var_num()))
-        value = child.get_value()
-        result_var.set_value( - value )
-        return result_var
-
-class ComparisonNode(Node):
+class InequalityNode(Node):
     """
-    ComparisonNode : +-/*
+    InequalityNode
     """
-    def __init__(self,operator,child1,child2):
-        self._operator = operator
-        super().__init__(name='ComparisonNode',children=[child1,child2])
-
-    def get_bad_operator(self):
-        if self._operator == '<':
-            return 'test_less'
-        elif self._operator == '>':
-            return 'test_gtr'
-        elif self._operator == '>=':
-            return 'test_gte'
-        elif self._operator == '<=':
-            return 'test_lte'
-        elif self._operator == '==':
-            return 'test_equ'
-        elif self._operator == '!=':
-            return 'test_nequ'
-        else:
-            raise SyntaxError("Comparison operator {} invalid!".format(
-                self._operator
-                ))
-
-    def execute_good_operator(self,left,right):
-        value = False
-        if self._operator == '<':
-            value = left.get_value() < right.get_value()
-        elif self._operator == '>':
-            value = left.get_value() > right.get_value()
-        elif self._operator == '>=':
-            value = left.get_value() >= right.get_value()
-        elif self._operator == '<=':
-            value = left.get_value() <= right.get_value()
-        elif self._operator == '==':
-            value = left.get_value() == right.get_value()
-        elif self._operator == '!=':
-            value = left.get_value() != right.get_value()
-        else:
-            raise SyntaxError("Comparison operator {} invalid!".format(
-                self._operator
-                ))
-        value = int(value)
-        return value
+    def __init__(self,child1,child2):
+        super().__init__(name='InequalityNode',children=[child1,child2])
 
     def generate_bad_code(self,output):
         tracker = Tracker()
-        output.append("#Start {}".format(self.name))
+        output.append("#Start InequalityNode")
         child1 = self.children[0].generate_bad_code(output)
         child2 = self.children[1].generate_bad_code(output)
 
@@ -435,22 +328,139 @@ class ComparisonNode(Node):
 
         result_var = ValVariable("s{}".format(tracker.get_var_num()))
         result_var.set_value(result_var.get_name())
-        output.append("{} {} {} {}".format(
-            self.get_bad_operator(),child1.get_value(),
-            child2.get_value(),result_var.get_value()))
+        output.append("test_nequ {} {} {}".format(
+            child1.get_value(),child2.get_value(),result_var.get_value()))
 
-        output.append("#End {}".format(self.name))
+        output.append("#End InequalityNode") 
         return result_var
 
-    def execute_good_code(self,output):
+class GreaterNode(Node):
+    """
+    GreaterNode
+    """
+    def __init__(self,child1,child2):
+        super().__init__(name='GreaterNode',children=[child1,child2])
+
+    def generate_bad_code(self,output):
         tracker = Tracker()
-        child1 = self.children[0].execute_good_code(output)
-        child2 = self.children[1].execute_good_code(output)
+        output.append("#Start GreaterNode")
+        child1 = self.children[0].generate_bad_code(output)
+        child2 = self.children[1].generate_bad_code(output)
+
         if not child1.same_type(child2):
             raise TypeError("Error: Cannot compare a {} and a {}!".format(
                 child1.get_type(),child2.get_type()))
+
         result_var = ValVariable("s{}".format(tracker.get_var_num()))
-        result_var.set_value(self.execute_good_operator(child1,child2))
+        result_var.set_value(result_var.get_name())
+        output.append("test_gtr {} {} {}".format(
+            child1.get_value(),child2.get_value(),result_var.get_value()))
+
+        output.append("#End GreaterNode")
+        return result_var
+
+
+class GreaterEqualNode(Node):
+    """
+    GreaterEqualNode
+    """
+    def __init__(self,child1,child2):
+        super().__init__(name='GreaterEqualNode',children=[child1,child2])
+
+    def generate_bad_code(self,output):
+        tracker = Tracker()
+        output.append("#Start GreaterEqualNode")
+        child1 = self.children[0].generate_bad_code(output)
+        child2 = self.children[1].generate_bad_code(output)
+
+        if not child1.same_type(child2):
+            raise TypeError("Error: Cannot compare a {} and a {}!".format(
+                child1.get_type(),child2.get_type()))
+
+        result_var = ValVariable("s{}".format(tracker.get_var_num()))
+        result_var.set_value(result_var.get_name())
+        output.append("test_gte {} {} {}".format(
+            child1.get_value(),child2.get_value(),result_var.get_value()))
+
+        output.append("#End GreaterEqualNode")
+        return result_var
+
+
+class LessEqualNode(Node):
+    """
+    LessEqualNode
+    """
+    def __init__(self,child1,child2):
+        super().__init__(name='LessEqualNode',children=[child1,child2])
+
+    def generate_bad_code(self,output):
+        tracker = Tracker()
+        output.append("#Start LessEqualNode")
+        child1 = self.children[0].generate_bad_code(output)
+        child2 = self.children[1].generate_bad_code(output)
+
+        if not child1.same_type(child2):
+            raise TypeError("Error: Cannot compare a {} and a {}!".format(
+                child1.get_type(),child2.get_type()))
+
+        result_var = ValVariable("s{}".format(tracker.get_var_num()))
+        result_var.set_value(result_var.get_name())
+        output.append("test_lte {} {} {}".format(
+            child1.get_value(),child2.get_value(),result_var.get_value()))
+
+        output.append("#End LessEqualNode")
+        return result_var
+
+
+class LessNode(Node):
+    """
+    LessNode
+    """
+    def __init__(self,child1,child2):
+        super().__init__(name='LessNode',children=[child1,child2])
+
+    def generate_bad_code(self,output):
+        tracker = Tracker()
+        output.append("#Start LessNode")
+        child1 = self.children[0].generate_bad_code(output)
+        child2 = self.children[1].generate_bad_code(output)
+
+        if not child1.same_type(child2):
+            raise TypeError("Error: Cannot compare a {} and a {}!".format(
+                child1.get_type(),child2.get_type()))
+
+        result_var = ValVariable("s{}".format(tracker.get_var_num()))
+        result_var.set_value(result_var.get_name())
+        output.append("test_less {} {} {}".format(
+            child1.get_value(),child2.get_value(),result_var.get_value()))
+
+        output.append("#End LessNode")
+        return result_var
+
+
+class EqualityNode(Node):
+    """
+    EqualityNode
+    """
+    def __init__(self,child1,child2):
+        super().__init__(name='EqualityNode',children=[child1,child2])
+
+    def generate_bad_code(self,output):
+        tracker = Tracker()
+        output.append("#Start EqualityNode")
+        child1 = self.children[0].generate_bad_code(output)
+        child2 = self.children[1].generate_bad_code(output)
+
+        if not child1.same_type(child2):
+            raise TypeError("Error: Cannot compare a {} and a {}!".format(
+                child1.get_type(),child2.get_type()))
+
+        result_var = ValVariable("s{}".format(tracker.get_var_num()))
+        result_var.set_value(result_var.get_name())
+        output.append("test_equ {} {} {}".format(
+            child1.get_value(),child2.get_value(),result_var.get_value()))
+
+        output.append("#End EqualityNode")
         return result_var
 
 class RandomNode(Node):
@@ -480,7 +490,6 @@ class BooleanAndNode(Node):
     """
     def __init__(self,child1,child2):
         super().__init__(name='BooleanAndNode',children=[child1,child2])
-
     def generate_bad_code(self,output):
         tracker = Tracker()
         output.append("#Start BooleanAndNode")
@@ -509,25 +518,6 @@ class BooleanAndNode(Node):
             child2.get_value(),result_var.get_value()))
         output.append("{}: # Jump Tag {}".format(jump_man,self.name))
         output.append("#End BooleanAndNode")
-        return result_var
-
-    def execute_good_code(self,output):
-        tracker = Tracker() 
-        child1 = self.children[0].execute_good_code(output)
-        if child1.get_type() != 'val':
-            raise TypeError(
-                    "Cannot use type {} in boolean operation!".format(
-                        child1.get_type())) 
-        result_var = ValVariable("s{}".format(tracker.get_var_num()))
-        result_var.set_value(child1.get_value()) 
-        if result_var.get_value() == 0:
-            return result_var 
-        child2 = self.children[1].generate_bad_code(output)
-        if child2.get_type() != 'val':
-            raise TypeError(
-                    "Cannot use type {} in boolean operation!".format(
-                        child1.get_type())) 
-        result_var.set_value(child2.get_value())
         return result_var
 
 class BooleanOrNode(Node):
@@ -567,26 +557,6 @@ class BooleanOrNode(Node):
         return result_var
 
 
-    def execute_good_code(self,output):
-        tracker = Tracker() 
-        child1 = self.children[0].execute_good_code(output)
-        if child1.get_type() != 'val':
-            raise TypeError(
-                    "Cannot use type {} in boolean operation!".format(
-                        child1.get_type())) 
-        result_var = ValVariable("s{}".format(tracker.get_var_num()))
-        result_var.set_value(child1.get_value()) 
-        if result_var.get_value() != 0:
-            return result_var 
-        child2 = self.children[1].generate_bad_code(output)
-        if child2.get_type() != 'val':
-            raise TypeError(
-                    "Cannot use type {} in boolean operation!".format(
-                        child1.get_type())) 
-        result_var.set_value(child2.get_value())
-        return result_var
-
-
 class UsageNode(Node):
     """
     UsageNode
@@ -596,15 +566,12 @@ class UsageNode(Node):
     def generate_bad_code(self,output):
         return self.data
 
-    execute_good_code = generate_bad_code
-
 class ArrayIndexNode(Node):
     """
     ArrayIndexNode
     """
     def __init__(self,data,child):
         super().__init__(name='ArrayIndexNode',data=data,children=[child])
-
     def generate_bad_code(self,output):
         temp_var_value = "s{}".format(Tracker().get_var_num())
         output.append("#Start {}".format(self.name))
@@ -620,29 +587,12 @@ class ArrayIndexNode(Node):
         output.append("#End {}".format(self.name))
         return var
 
-    def execute_good_code(self,output):
-        temp_var_value = "s{}".format(Tracker().get_var_num())
-        index = self.children[0].execute_good_code(output)
-
-        if index.get_type() != "val":
-            raise TypeError("Cannot index array with type {}".format(
-                index.get_type()))
-        var = ArrayElementVariable(
-                temp_var_value,
-                self.data.element_type.get_type(),
-                self.data.get_value(),index)
-
-        var.set_value(self.data.get_value()[index.get_value()])
-        return var
-
-
 class AssignmentNode(Node):
     """
     AssignmentNode
     """
     def __init__(self,data,child):
         super().__init__(name='AssignmentNode',data=data,children=[child])
-
     def generate_bad_code(self,output):
         tracker = Tracker()
         output.append("#Start Assignment")
@@ -658,19 +608,6 @@ class AssignmentNode(Node):
                 child.get_value(),self.data.get_value()))
         output.append("#End Assignment")
         return self.data
-
-    def execute_good_code(self,output):
-        tracker = Tracker()
-        child = self.children[0].execute_good_code(output)
-        if not child.same_type(self.data):
-            raise TypeError("Error cannot assign type {} to type {}".format(
-                child.get_type(),self.data.get_type()))
-        if child.get_type() == 'array':
-            self.data.set_value(child.get_value().copy())
-        else:
-            self.data.set_value(child.get_value())
-        return self.data
-
 
 class SizeMethodNode(Node):
     """
@@ -691,16 +628,6 @@ class SizeMethodNode(Node):
             var.get_value(),result.get_value()))
         output.append("#End SizeMethod")
         return result
-
-    def execute_good_code(self,output):
-        var = self.data.execute_good_code(output)
-        if 'size' not in var.get_methods():
-            raise TypeError("SizeMethod {} cannot be invoked on a {}".format(
-                method,var.get_type()))
-        result = ValVariable("s{}".format(Tracker().get_var_num()))
-        result.set_value(len(var.get_value()))
-        return result
-
 
 class ResizeMethodNode(Node):
     """
@@ -724,36 +651,12 @@ class ResizeMethodNode(Node):
         output.append("#End ReresizeMethod")
         return var
 
-    def execute_good_code(self,output):
-        var = self.data.execute_good_code(output) 
-        if 'resize' not in var.get_methods():
-            raise TypeError("SizeMethod {} cannot be invoked on a {}".format(
-                method,var.get_type())) 
-        expr = self.children[0].execute_good_code(output)
-        if expr.get_type() != 'val':
-            raise TypeError("Resize must have expression of type val for an argument") 
-        expr = expr.get_value()
-        value = var.get_value()
-        if expr < len(value):
-            value = value[:expr]
-        elif expr > len(value):
-            diff = expr - len(value)
-            while diff > 0:
-                if isinstance(value,str):
-                    value = value + "0"
-                else:
-                    value.append(0)
-                diff -= 1
-        var.set_value(value)
-        return var
-
 class ExpressionAssignmentNode(Node):
     """
     ExpressionAssignmentNode
     """
     def __init__(self,child1,child2):
         super().__init__(name='ExpressionAssignmentNode',children=[child1,child2])
-
     def generate_bad_code(self,output):
         tracker = Tracker()
         output.append("#Start Expression Assignment")
@@ -766,27 +669,16 @@ class ExpressionAssignmentNode(Node):
             output.append("ar_set_idx {} {} {}".format(
                 child1.array_name,child1.index.get_value(),child2.get_value()
             ))
+        elif child1.get_type() == 'array':
+            output.append("ar_copy {} {}".format(
+                child2.get_value(),child1.get_value()))
+
         else:
             output.append("val_copy {} {}".format(
                 child2.get_value(),child1.get_value()))
         
         output.append("#End Expression Assignment")
         return child1
-
-    def execute_good_code(self,output):
-        tracker = Tracker()
-        child1 = self.children[0].execute_good_code(output)
-        child2 = self.children[1].execute_good_code(output)
-        if not child1.same_type(child2):
-            raise TypeError("Error cannot assign type {} to type {}".format(
-                child1.get_type(),child2.get_type()))
-        if child1.is_reference():
-            print(dir(child1))
-            value[child1.index.get_value()] = child2.get_value()
-        else:
-            child1.set_value(child2.get_value())
-        return child1
-
 
 class BlockNode(Node):
     """
@@ -801,11 +693,6 @@ class BlockNode(Node):
         for child in self.children:
             child.generate_bad_code(output)
         output.append("#{} ending".format(self.name))
-
-    def execute_good_code(self,output):
-        for child in self.children:
-            child.execute_good_code(output)
-
 
 class IfNode(Node):
     """
@@ -832,17 +719,6 @@ class IfNode(Node):
         block = self.children[1].generate_bad_code(output)
         output.append("{}: # Jump If".format(jump_man))
         output.append("#End {}".format(self.name))
-
-    def execute_good_code(self,output):
-        expression = self.children[0].execute_good_code(output)
-        if expression.get_type() != 'val':
-            raise TypeError(
-                    "Unable to use type {} in if statement!".format(
-                        expression.get_type()))
-        block = self.children[1] 
-        if expression.get_value() != 0:
-            block.execute_good_code(output) 
-        return None
 
 class IfElseNode(Node):
     """
@@ -874,21 +750,6 @@ class IfElseNode(Node):
         block_else = self.children[2].generate_bad_code(output)
         output.append("{}: # Jump If".format(jump_end_if))
         output.append("#End {}".format(self.name))
-
-    def execute_good_code(self,output):
-        expression = self.children[0].execute_good_code(output)
-        if expression.get_type() != 'val':
-            raise TypeError(
-                    "Unable to use type {} in if statement!".format(
-                        expression.get_type()))
-        block1 = self.children[1] 
-        block2 = self.children[2] 
-        if expression.get_value() != 0:
-            block1.execute_good_code(output) 
-        else:
-            block2.execute_good_code(output)
-        return None
-
 
 
 class WhileNode(Node):
@@ -932,22 +793,6 @@ class WhileNode(Node):
         output.append("{}: # While End".format(jump_end))
         output.append("#End {}".format(self.name))
 
-    def execute_good_code(self,output):
-        expression = self.children[0]
-        block = self.children[1] 
-
-        try:
-            expr = expression.execute_good_code(output)
-            if expr.get_type() != 'val':
-                raise TypeError(
-                        "Unable to use type {} in if statement!".format(
-                            expression.get_type()))
-            while expr.get_value() != 0:
-                block.execute_good_code(output)
-                expr = expression.execute_good_code(output)
-        except Exception:
-            pass
-
 class NoOpNode(Node):
     """
     I do nothing!
@@ -957,9 +802,6 @@ class NoOpNode(Node):
 
     def generate_bad_code(self,output):
         output.append("# LOL, I don't do anything! I'm a {}.".format(self.name))
-
-    def execute_good_code(self,output):
-        pass
 
 class BreakNode(Node):
     """
@@ -974,6 +816,3 @@ class BreakNode(Node):
         if self.tag is None:
             raise SyntaxError("Cannot break like this!")
         output.append("jump {} # Break".format(self.tag))
-
-    def execute_good_code(self,output):
-        raise Exception()
