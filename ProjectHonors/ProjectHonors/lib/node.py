@@ -781,8 +781,11 @@ class ExpressionAssignmentNode(Node):
             raise TypeError("Error cannot assign type {} to type {}".format(
                 child1.get_type(),child2.get_type()))
         if child1.is_reference():
-            print(dir(child1))
-            value[child1.index.get_value()] = child2.get_value()
+            array = child1.array_name
+            newvalue = child2.get_value()
+            index = child1.index.get_value()
+            array[index] = newvalue
+            return child2
         else:
             child1.set_value(child2.get_value())
         return child1
