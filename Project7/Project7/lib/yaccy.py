@@ -46,9 +46,9 @@ def p_block_baby(p):
     """
     statement : scopeupbro '{' statements '}' 
     """
-    symbols = Tracker().get_symbols()
+    symbols = Tracker().symbols
     symbols.remove_scope()
-    Tracker().set_symbols(symbols)
+    Tracker().symbols = symbols
     p[0] = p[3]
 
 def p_return_statement(p):
@@ -79,9 +79,9 @@ def p_function_definition(p):
     """
     funcdef : FUNCTION_DEFINE type ID  scopeupbro '(' parameters ')' statement
     """
-    symbols = Tracker().get_symbols()
+    symbols = Tracker().symbols
     symbols.remove_scope()
-    Tracker().set_symbols(symbols)
+    Tracker().symbols = symbols
     p[0] = None
 
 def p_parameter_list(p):
@@ -94,7 +94,7 @@ def p_parameter(p):
     """
     parameter : simple_declaration
     """
-    p[0] = None
+    p[0] = p[1]
 
 def p_empty_parameter_list(p):
     """
@@ -112,9 +112,9 @@ def p_scope_up_bro(p):
     """
     scopeupbro :
     """
-    symbols = Tracker().get_symbols()
+    symbols = Tracker().symbols
     symbols.add_scope()
-    Tracker().set_symbols(symbols) 
+    Tracker().symbols = symbols
 
 def p_empty_statement(p):
     """
@@ -168,13 +168,15 @@ def p_simple_declaration(p):
     """
     simple_declaration : type ID
     """
-    var_name = p[2]
-    symbols = Tracker().get_symbols()
-    variable = p[1]
-    variable.set_name(var_name)
-    variable.set_value(variable.get_variable_template().format(Tracker().get_var_num()))
+    symbols = Tracker().symbols
+    name = p[2]
+    _type = p[1]
+    template = _type.template
+    value = template.format(Tracker().varnum)
+    data = Data(value,_type)
+    variable = Variable(name,data)
     symbols.declare_variable(variable)
-    Tracker().set_symbols(symbols) 
+    Tracker().symbols = symbols
     p[0] = variable
 
 def p_assign_declaration(p):
@@ -205,7 +207,7 @@ def p_var_usage(p):
     """
     var_usage : ID
     """
-    symbols = Tracker().get_symbols()
+    symbols = Tracker().symbols
     variable = symbols.deref_variable(p[1])
     p[0] = UsageNode(variable)
 
@@ -213,7 +215,7 @@ def p_array_element_usage(p):
     """
     var_usage : ID '[' expression ']'
     """
-    symbols = Tracker().get_symbols()
+    symbols = Tracker().symbols
     var = symbols.deref_variable(p[1])
     if var.get_type() != 'array':
         raise TypeError("Cannot index non array type variable {}".format(var.get_name()))
@@ -285,24 +287,27 @@ def p_type(p):
     """
     type : TYPE
     """
-    p[0] = Variable("",p[1])
+    p[0] = TypeFactory.make(p[1])
 
 def p_alias_type(p):
     """
     type : ALIAS_TYPE
     """
     alias = p[1]
-    var = None
+    aliastype = None
     if alias == "string":
-        var = ArrayVariable("",CharVariable(""))
-    p[0] = var
+        subtype = TypeFactory.make("char")
+        aliastype = TypeFactory.makemeta("array",subtype)
+    else:
+        raise ValueError("Alias type {} not configured!".format(alias))
+    p[0] = aliastype
 
 def p_meta_type(p):
     """
     type : META_TYPE '(' TYPE ')'
     """
-    sub_var = Variable("",p[3])
-    p[0] = ArrayVariable("",sub_var)
+    subtype = TypeFactory.make(p[3])
+    p[0] = TypeFactory.makemeta(p[1],subtype)
 
 def p_boolean_and(p):
     """
@@ -315,7 +320,6 @@ def p_boolean_or(p):
     expression : expression BOOL_OR expression
     """
     p[0] = BooleanOrNode(p[1],p[3])
-
 
 def p_val_literal_expression(p):
     """
@@ -335,44 +339,25 @@ def p_string_literal_expression(p):
     """
     p[0] = StringLiteralNode(p[1])
 
-
-def p_arithmetic_expression_sub(p):
+def p_arithmetic_expression(p):
     """
     expression : expression '-' expression
+                | expression '/' expression
+                | expression '+' expression
+                | expression '*' expression
     """
-    p[0] = SubtractionNode(p[1],p[3])
-
-def p_arithmetic_expression_mult(p):
-    """
-    expression : expression '*' expression
-    """
-    p[0] = MultiplicationNode(p[1],p[3])
-
-
-def p_arithmetic_expression_div(p):
-    """
-    expression : expression '/' expression
-    """
-    p[0] = DivisionNode(p[1],p[3])
-
-
-def p_arithmetic_expression_add(p):
-    """
-    expression : expression '+' expression
-    """
-    p[0] = AdditionNode(p[1],p[3])
+    p[0] = ArithmeticNode(p[2],p[1],p[3])
 
 def p_boolean_expression_equality(p):
     """
     expression : expression COMP_EQU expression
+                | expression COMP_NEQU expression
+                | expression COMP_LESS expression
+                | expression COMP_GTR expression
+                | expression COMP_LTE expression
+                | expression COMP_GTE expression
     """
-    p[0] = EqualityNode(p[1],p[3])
-
-def p_boolean_expression_inequality(p):
-    """
-    expression : expression COMP_NEQU expression
-    """
-    p[0] = InequalityNode(p[1],p[3])
+    p[0] = ComparisonNode(p[2],p[1],p[3])
 
 def p_arithmetic_expression_negation(p):
     """
@@ -385,30 +370,6 @@ def p_boolean_expression_negation(p):
     expression : '!' expression %prec UNARY_NOT
     """
     p[0] = NotNode(p[2])
-
-def p_boolean_expression_less_than(p):
-    """
-    expression : expression COMP_LESS expression
-    """
-    p[0] = LessNode(p[1],p[3])
-
-def p_boolean_expression_greater_than(p):
-    """
-    expression : expression COMP_GTR expression
-    """
-    p[0] = GreaterNode(p[1],p[3])
-
-def p_boolean_expression_less_than_equal(p):
-    """
-    expression : expression COMP_LTE expression
-    """
-    p[0] = LessEqualNode(p[1],p[3])
-
-def p_boolean_expression_greater_than_equal(p):
-    """
-    expression : expression COMP_GTE expression
-    """
-    p[0] = GreaterEqualNode(p[1],p[3])
 
 def p_paren_expression(p):
     """

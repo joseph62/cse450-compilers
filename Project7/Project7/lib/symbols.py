@@ -20,7 +20,7 @@ class Table:
         return name in self._variables
 
     def declare_variable(self,var):
-        self._variables[var.get_name()] = var
+        self._variables[var.name] = var
 
     def deref_variable(self,name):
         return self._variables[name]
@@ -40,10 +40,10 @@ class SymbolTable:
     __repr__ = __str__
 
     def declare_variable(self,var):
-        if var.get_name() in self._tables[-1]:
+        if var.name in self._tables[-1]:
             raise NameError("Variable {} is already declared in scope {}!"
-                    .format(var.get_name(),self._scope))
-        var.set_scope(self._scope)
+                    .format(var.name,self._scope))
+        var.scope = self._scope
         self._tables[-1].declare_variable(var)
 
     def deref_variable(self,name):
