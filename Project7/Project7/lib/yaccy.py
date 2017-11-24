@@ -217,8 +217,7 @@ def p_array_element_usage(p):
     """
     symbols = Tracker().symbols
     var = symbols.deref_variable(p[1])
-    if var.get_type() != 'array':
-        raise TypeError("Cannot index non array type variable {}".format(var.get_name()))
+    TypeEnforcer.error_if_is_not(var,TypeEnum.Array)
     p[0] = ArrayIndexNode(var,p[3])
 
 def p_assignment(p):
@@ -247,29 +246,25 @@ def p_add_assign(p):
     """
     expression : var_usage ASSIGN_ADD expression
     """
-    p[0] = ExpressionAssignmentNode(p[1],AdditionNode(p[1],p[3]))
-
+    p[0] = ExpressionAssignmentNode(p[1],ArithmeticNode('+',p[1],p[3])) 
 
 def p_sub_assign(p):
     """
     expression : var_usage ASSIGN_SUB expression
     """
-    p[0] = ExpressionAssignmentNode(p[1],SubtractionNode(p[1],p[3]))
-
+    p[0] = ExpressionAssignmentNode(p[1],ArithmeticNode('-',p[1],p[3])) 
 
 def p_mult_assign(p):
     """
     expression : var_usage ASSIGN_MULT expression
     """
-    p[0] = ExpressionAssignmentNode(p[1],MultiplicationNode(p[1],p[3]))
-
+    p[0] = ExpressionAssignmentNode(p[1],ArithmeticNode('*',p[1],p[3])) 
 
 def p_div_assign(p):
     """
     expression : var_usage ASSIGN_DIV expression
     """
-    p[0] = ExpressionAssignmentNode(p[1],DivisionNode(p[1],p[3]))
-
+    p[0] = ExpressionAssignmentNode(p[1],ArithmeticNode('/',p[1],p[3])) 
 
 def p_var_usage_value(p):
     """

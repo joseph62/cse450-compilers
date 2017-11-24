@@ -134,14 +134,13 @@ class StringLiteralNode(Node):
 
         arr_size = len(result)
         output.append("# Starting {}".format(self.name))
-        output.append("ar_set_size {} {}".format(temp_var.data.value,arr_size))
+        output.append("ar_set_size {} {}".format(var.data.value,arr_size))
         temp = var.data.type.subtype.template.format(tracker.varnum)
         for index,character in enumerate(result):
             output.append("val_copy '{}' {}".format(character,temp))
             output.append("ar_set_idx {} {} {}".format(
                 var.data.value,index,temp))
-        output.append("# Ending {}".format(self.name))
-
+        output.append("# Ending {}".format(self.name)) 
         return var
         
 class ArithmeticNode(Node):
@@ -330,10 +329,9 @@ class ArrayIndexNode(Node):
         position = self.children[0].generate_bad_code(output)
         TypeEnforcer.error_if_is_not(position,TypeEnum.Val)
         # This code is a common pattern. Try refactoring into another function
-        _type = self.data.type.subtype
+        _type = self.data.data.type.subtype
         data = Data(temp_var_value,_type)
         var = RefVariable(data.value,data,self.data,position)
-        var.set_value(var.name)
         output.append(
                     "ar_get_idx {} {} {}".format(
                     var.source.data.value,
@@ -355,7 +353,7 @@ class AssignmentNode(Node):
         output.append("#Start Assignment")
         child = self.children[0].generate_bad_code(output)
         TypeEnforcer.error_if_not_equal(child,self.data)
-        if child.data.type == 'array':
+        if TypeEnforcer.is_type(child,TypeEnum.Array):
             output.append("ar_copy {} {}".format(child.data.value,self.data.data.value))
         else:
             output.append("val_copy {} {}".format(child.data.value,self.data.data.value))
@@ -372,9 +370,7 @@ class SizeMethodNode(Node):
     def generate_bad_code(self,output):
         output.append("#Start SizeMethod")
         var = self.data.generate_bad_code(output)
-        if 'size' not in var.get_methods():
-            raise TypeError("SizeMethod {} cannot be invoked on a {}".format(
-                method,var.data.type))
+        TypeEnforcer.error_if_not_has_method(var,'size')
         result = VariableFactory.maketempscalar("val",Tracker().varnum)
         output.append("ar_get_size {} {}".format(var.data.value,result.data.value))
         output.append("#End SizeMethod")
@@ -390,9 +386,7 @@ class ResizeMethodNode(Node):
     def generate_bad_code(self,output):
         output.append("#Start ResizeMethod")
         var = self.data.generate_bad_code(output)
-        if 'resize' not in var.get_methods():
-            raise TypeError("ResizeMethod {} cannot be invoked on a {}".format(
-                method,var.data.type))
+        TypeEnforcer.error_if_not_has_method(var,'resize')
         child = self.children[0].generate_bad_code(output)
         TypeEnforcer.error_if_is_not(child,TypeEnum.Val)
         output.append("ar_set_size {} {}".format(
@@ -412,11 +406,15 @@ class ExpressionAssignmentNode(Node):
         child1 = self.children[0].generate_bad_code(output)
         child2 = self.children[1].generate_bad_code(output)
         TypeEnforcer.error_if_not_equal(child1,child2)
-        if child1.is_reference():
-            output.append("ar_set_idx {} {} {}".format(
-                child1.array_name,child1.index.data.value,child2.data.value
-            ))
-        elif child1.data.type == 'array':
+        if child1.is_reference:
+            output.append(
+                    "ar_set_idx {} {} {}".format(
+                    child1.source.data.value,
+                    child1.position.data.value,
+                    child2.data.value
+                    )
+                )
+        elif TypeEnforcer.is_type(child2,TypeEnum.Array):
             output.append("ar_copy {} {}".format(child2.data.value,child1.data.value)) 
         else:
             output.append("val_copy {} {}".format(child2.data.value,child1.data.value)) 

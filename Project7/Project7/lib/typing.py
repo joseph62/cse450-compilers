@@ -14,7 +14,7 @@ class Type:
     """
     Type represents a type for data,variables, and expressions
     """
-    def __init__(self,_type,template="s{}"):
+    def __init__(self,_type,template="s{}",methods=[]):
         """
         _type : instance of TypeEnum
         template : Intermediate variable type - string
@@ -23,6 +23,7 @@ class Type:
             raise TypeError("Type must be of TypeEnum")
         self._type = _type
         self._template = template
+        self._methods = methods
 
     def __str__(self):
         return str(self._type)
@@ -33,6 +34,10 @@ class Type:
         return (isinstance(other,Type) and
                 self._type == other._type
                 )
+
+    @property
+    def methods(self):
+        return self._methods
 
     @property
     def template(self):
@@ -57,11 +62,11 @@ class MetaType(Type):
     def __init__(self,_type,_subtype):
         """
         _type : TypeEnum
-        _subtype : TypeEnum
+        _subtype : Type
         """
-        super().__init__(_type)
-        if not isinstance(_subtype,TypeEnum):
-            raise TypeError("Subtype must be of TypeEnum")
+        super().__init__(_type,methods=["resize","size"])
+        if not isinstance(_subtype,Type):
+            raise TypeError("Subtype must be of Type")
         self._subtype = _subtype
         self.template = "a{}"
 

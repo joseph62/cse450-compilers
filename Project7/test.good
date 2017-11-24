@@ -1,4 +1,4 @@
-val x = 2;
-define val echo(val x) print(2);
+string s = "hi";
+char y = 'a';
+s[1] = y;
 
-print(x);

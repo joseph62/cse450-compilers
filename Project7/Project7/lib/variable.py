@@ -21,6 +21,10 @@ class Variable:
     __repr__ = __str__
 
     @property
+    def is_reference(self):
+        return False
+
+    @property
     def data(self):
         return self._data
 
@@ -45,6 +49,10 @@ class RefVariable(Variable):
         super().__init__(name,data)
         self._source = source
         self._position = position
+
+    @property
+    def is_reference(self):
+        return True
 
     @property
     def source(self):
