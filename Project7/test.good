@@ -1,4 +1,3 @@
-string s = "hi";
-char y = 'a';
-s[1] = y;
-
+while (1){
+	break;
+}

@@ -7,6 +7,7 @@ from .typecheck import TypeEnforcer
 from .typing import *
 from .variable import *
 from .data import *
+from .mode import CompilerMode
 
 class Node:
     """
@@ -491,18 +492,11 @@ class WhileNode(Node):
         while_num = Tracker().whilenum
         jump_start = "while_statement_start_{}".format(while_num)
         jump_end = "while_statement_end_{}".format(while_num)
-        def operation(node):
-            if isinstance(node,WhileNode):
-                # return true to not iterate over children
-                return True
-            if isinstance(node,BreakNode):
-                # set jump tag for break statements within while
-                node.set_tag(jump_end)
-            return False 
-        self.children[1].do_a_thing(operation)
+        tracker = Tracker()
+        tracker.break_tags.append(jump_end)
         output.append("{}: # While start".format(jump_start))
         expression = self.children[0].generate_bad_code(output)
-        var = VariableFactory("val",Tracker().varnum)
+        var = VariableFactory.maketempscalar("val",Tracker().varnum)
         TypeEnforcer.error_if_is_not(expression,TypeEnum.Val)
         output.append("test_nequ 0 {} {}".format(expression.data.value,var.data.value))
         output.append("jump_if_0 {} {}".format(var.data.value,jump_end))
@@ -510,6 +504,7 @@ class WhileNode(Node):
         output.append("jump {}".format(jump_start))
         output.append("{}: # While End".format(jump_end))
         output.append("#End {}".format(self.name))
+        tracker.break_tags.pop()
 
 class NoOpNode(Node):
     """
@@ -531,6 +526,5 @@ class BreakNode(Node):
     def set_tag(self,tag):
         self.tag = tag
     def generate_bad_code(self,output):
-        if self.tag is None:
-            raise SyntaxError("Cannot break like this!")
-        output.append("jump {} # Break".format(self.tag))
+        tracker = Tracker()
+        output.append("jump {} # Break".format(tracker.break_tag))

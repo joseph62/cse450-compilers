@@ -50,6 +50,12 @@ class RefVariable(Variable):
         self._source = source
         self._position = position
 
+    def __str__(self):
+        return "{} Reference of {} at position {}".format(
+                super().__str__(),
+                self._source,
+                self._position
+                )
     @property
     def is_reference(self):
         return True

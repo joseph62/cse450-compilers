@@ -4,6 +4,7 @@ from .tracker import Tracker
 from .variable import *
 from .symbols import SymbolTable
 from .node import *
+from .function import Function
 
 precedence = (
             ('right','=' ,'ASSIGN_ADD' ,'ASSIGN_SUB' ,
@@ -79,16 +80,25 @@ def p_function_definition(p):
     """
     funcdef : FUNCTION_DEFINE type ID  scopeupbro '(' parameters ')' statement
     """
-    symbols = Tracker().symbols
+    #class Function(name,_type,label,return_var,return_label,argument_vars):
+    funcname = p[3]
+    functype = p[2]
+    parameters = p[6]
+    node = p[8]
+    function = Function(funcname,functype,parameters,node)
+    tracker = Tracker()
+    symbols = tracker.symbols
     symbols.remove_scope()
-    Tracker().symbols = symbols
+    tracker.symbols = symbols
     p[0] = None
 
 def p_parameter_list(p):
     """
     parameters : parameter ',' parameters
     """
-    p[0] = None
+    parameters = p[3]
+    parameters.insert(0,p[1])
+    p[0] = parameters
 
 def p_parameter(p):
     """
@@ -171,8 +181,7 @@ def p_simple_declaration(p):
     symbols = Tracker().symbols
     name = p[2]
     _type = p[1]
-    template = _type.template
-    value = template.format(Tracker().varnum)
+    value = _type.template.format(Tracker().varnum)
     data = Data(value,_type)
     variable = Variable(name,data)
     symbols.declare_variable(variable)

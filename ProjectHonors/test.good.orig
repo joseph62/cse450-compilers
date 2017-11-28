@@ -1,0 +1,12 @@
+<<<<<<< HEAD
+array(val) x;
+x.resize(3);
+x[0] = 8;
+x[1] = 8;
+=======
+string x = "abcdef";
+x.resize(3);
+print(x);
+x[0] = x[1] = x[2] = 'd';
+print(x);
+>>>>>>> 67d68fa14ef195485938d799727420d20ce93085
