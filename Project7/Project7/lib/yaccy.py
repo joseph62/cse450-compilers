@@ -56,7 +56,7 @@ def p_return_statement(p):
     """
     retstatement : COMMAND_RETURN expression ';'
     """
-    p[0] = None
+    p[0] = ReturnNode(p[2])
 
 def p_return_statement_as_statement(p):
     """
@@ -81,15 +81,14 @@ def p_function_definition(p):
     funcdef : FUNCTION_DEFINE type ID  scopeupbro '(' parameters ')' statement
     """
     #class Function(name,_type,label,return_var,return_label,argument_vars):
+    tracker = Tracker()
     funcname = p[3]
     functype = p[2]
     parameters = p[6]
     node = p[8]
     function = Function(funcname,functype,parameters,node)
-    tracker = Tracker()
-    symbols = tracker.symbols
-    symbols.remove_scope()
-    tracker.symbols = symbols
+    tracker.functions.declare_variable(function)
+    tracker.symbols.remove_scope()
     p[0] = None
 
 def p_parameter_list(p):

@@ -516,6 +516,26 @@ class NoOpNode(Node):
     def generate_bad_code(self,output):
         output.append("# LOL, I don't do anything! I'm a {}.".format(self.name))
 
+class ReturnNode(Node):
+    """
+    ReturnNode
+    """
+    def __init__(self,retexpression):
+        super().__init__(name="ReturnNode",children=[retexpression])
+
+    def generate_bad_code(self,output):
+        tracker = Tracker()
+        function = tracker.active_function
+        retexpression = self.children[0].generate_bad_code(output)
+        if not function.type == retexpression.data.type:
+            raise TypeError("Return statement needs type {} not type {}!".format(function.type,retexpression.data.type))
+        if retexpression.data.type.type == TypeEnum.Array:
+            output.append("ar_copy {} {}".format(retexpression.data.value,function.return_var.data.value))
+        else:
+            output.append("val_copy {} {}".format(retexpression.data.value,function.return_var.data.value))
+        output.append("jump {} # Return!".format(function.return_label.data.value))
+
+
 class BreakNode(Node):
     """
     BreakNode

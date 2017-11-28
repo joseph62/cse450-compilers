@@ -2,7 +2,7 @@
 #Singleton tracker for global values
 
 from .symbols import SymbolTable
-from .mode import CompilerMode
+
 
 class Tracker:
     """
@@ -19,8 +19,7 @@ class Tracker:
             self.function_counter = 1
             self.symbols = SymbolTable()
             self.break_tag_stack = []
-            self.function_tag_stack = []
-            self._mode_stack = [CompilerMode.Normal]
+            self._active_function = None
             self.functions = SymbolTable()
 
     instance = None
@@ -68,11 +67,11 @@ class Tracker:
 
     @property
     def functions(self):
-        return Tracker.instance.symbols
+        return Tracker.instance.functions
 
     @functions.setter
     def functions(self,functions):
-        Tracker.instance.symbols = functions
+        Tracker.instance.functions = functions
 
 
     @property
@@ -82,17 +81,6 @@ class Tracker:
     @symbols.setter
     def symbols(self,symbols):
         Tracker.instance.symbols = symbols
-
-    @property
-    def function_tag(self):
-        if len(Tracker.instance.function_tag_stack) == 0:
-            raise Exception("Function tag stack empty!")
-        return Tracker.instance.function_tag_stack[-1]
-
-
-    @property
-    def function_tags(self):
-        return Tracker.instance.function_tag_stack
 
     @property
     def break_tag(self):
@@ -114,3 +102,17 @@ class Tracker:
     @property
     def modes(self):
         return Tracker.instance._mode_stack
+
+    @property
+    def active_function(self):
+        active_function = Tracker.instance._active_function
+        if active_function is None:
+            raise Exception("There is no active function!")
+        return active_function
+
+    @active_function.setter
+    def active_function(self,function):
+        #if not isinstance(function,Function):
+        #    raise Exception("Active function must be of type Function!")
+        Tracker.instance._active_function = function
+

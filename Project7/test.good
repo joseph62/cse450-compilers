@@ -1,3 +1,5 @@
-while (1){
-	break;
-}
+print("start");
+define val add(val x, val y){
+	return x + y;
+} 
+print("end");

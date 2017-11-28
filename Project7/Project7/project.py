@@ -17,12 +17,20 @@ def generate_ugly_code_from_string(input_):
 # LEX RULEZ
 def generate_bad_code_from_string(input_):
     Tracker().reset()
-    Tracker()
+    tracker = Tracker()
     lexer = lex.lex()
     parser = yacc.yacc()
     program = parser.parse(input_, lexer=lexer)
     output = []
     program.generate_bad_code(output)
+    output.append("jump program_end")
+    output.append("# Function Definitions")
+    for function in tracker.functions.get_all_variables():
+        output.append("{}:".format(function.label))
+        tracker.active_function = function
+        for node in function.nodes:
+            node.generate_bad_code(output)
+    output.append("program_end:")
     return "\n".join(output) + "\n"
 
 def generate_tree_from_string(input_):

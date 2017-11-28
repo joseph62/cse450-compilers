@@ -27,6 +27,9 @@ class Table:
 
     def set_variable(self,name,value):
         self._variables[name].value = value
+        
+    def get_variables(self):
+        return self._variables.values()
 
 class SymbolTable:
     def __init__(self):
@@ -69,4 +72,10 @@ class SymbolTable:
 
     def is_global_scope(self):
         return self._scope == 0
+
+    def get_all_variables(self):
+        result = []
+        for table in self._tables:
+            result += table.get_variables()
+        return result
 
