@@ -2,7 +2,7 @@
 
 from .variable import *
 from .typing import *
-from .node import Node
+from .node import Node,ReturnNode,UsageNode
 from .tracker import Tracker
 
 class Function():
@@ -18,11 +18,28 @@ class Function():
         self._name = name
         self._label = "function_{}_{}".format(name,tracker.varnum)
         self._type = _type
+        default_return_node = None
         self._nodes = [node]
         self._arguments = arguments
         var_name = self._type.template.format(tracker.varnum)
         self._return_var = Variable(var_name,Data(var_name,self._type))
         self._return_label = VariableFactory.maketempscalar("val",tracker.varnum)
+        self.add_default_return()
+
+    def add_default_return(self):
+        tracker = Tracker()
+        temp = None
+        if self._type.type == TypeEnum.Val:
+            temp = VariableFactory.maketempscalar("val",tracker.varnum)
+        elif self._type.type == TypeEnum.Char:
+            temp = VariableFactory.maketempscalar("char",tracker.varnum)
+        elif self._type.type == TypeEnum.Array:
+            if self._type.subtype.type == TypeEnum.Val:
+                temp = VariableFactory.maketempmeta("array","val",tracker.varnum)
+            elif self._type.subtype.type == TypeEnum.Char:
+                temp = VariableFactory.maketempmeta("array","char",tracker.varnum)
+        usage_node = UsageNode(temp)
+        self._nodes.append(ReturnNode(usage_node))
 
     @property
     def name(self):

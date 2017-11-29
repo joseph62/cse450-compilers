@@ -447,7 +447,7 @@ class IfNode(Node):
         output.append("#Start {}".format(self.name))
         jump_man = "if_statement_{}".format(Tracker().ifnum)
         expression = self.children[0].generate_bad_code(output)
-        var = VariableFactory("val",Tracker().varnum)
+        var = VariableFactory.maketempscalar("val",Tracker().varnum)
         TypeEnforcer.error_if_is_not(expression,TypeEnum.Val)
         output.append("test_nequ 0 {} {}".format(expression.data.value,var.data.value))
         output.append("jump_if_0 {} {}".format(var.data.value,jump_man))
@@ -468,7 +468,7 @@ class IfElseNode(Node):
         jump_end_if = "if_statement_{}".format(jump_num)
         jump_else = "else_statment_{}".format(jump_num)
         expression = self.children[0].generate_bad_code(output)
-        var = VariableFactory("val",Tracker().varnum)
+        var = VariableFactory.maketempscalar("val",Tracker().varnum)
         TypeEnforcer.error_if_is_not(expression,TypeEnum.Val)
         output.append("test_nequ 0 {} {}".format(expression.data.value,var.data.value))
         output.append("jump_if_0 {} {}".format(var.data.value,jump_else))
@@ -534,6 +534,25 @@ class ReturnNode(Node):
         else:
             output.append("val_copy {} {}".format(retexpression.data.value,function.return_var.data.value))
         output.append("jump {} # Return!".format(function.return_label.data.value))
+
+class FunctionCallNode(Node):
+    """
+    FunctionCallNode
+    """
+    def __init__(self,function,arguments):
+        super().__init__(name="FunctionCallNode",children=[arguments])
+        self.function = function
+
+    def generate_bad_code(self,output):
+        tracker = Tracker()
+        results = []
+        output.append("#Start {}".format(self.name))
+        if len(self.function.arguments) != len(self.children[0]):
+            raise Exception("Incorrect number of arguments for function")
+        for index,argument in enumerate(self.children[0]):
+            result = argument.generate_bad_code(output)
+            TypeEnforcer.error_if_not_equal(self.function.arguments[index],result)
+        output.append("#End {}".format(self.name))
 
 
 class BreakNode(Node):

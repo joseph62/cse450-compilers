@@ -91,6 +91,41 @@ def p_function_definition(p):
     tracker.symbols.remove_scope()
     p[0] = None
 
+def p_function_call(p):
+    """
+    expression : ID '(' arguments ')'
+    """
+    tracker = Tracker()
+    function = tracker.functions.deref_variable(p[1])
+
+    p[0] = FunctionCallNode(function,p[3])
+
+def p_arguments_list(p):
+    """
+    arguments : argument ',' arguments
+    """
+    arguments = p[3]
+    arguments.append(p[1])
+    p[0] = arguments
+
+def p_empty_arguments(p):
+    """
+    arguments : 
+    """
+    p[0] = []
+
+def p_single_argument(p):
+    """
+    arguments : argument
+    """
+    p[0] = [p[1]]
+
+def p_argument(p):
+    """
+    argument : expression
+    """
+    p[0] = p[1]
+
 def p_parameter_list(p):
     """
     parameters : parameter ',' parameters

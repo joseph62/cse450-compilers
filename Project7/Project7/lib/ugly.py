@@ -3,6 +3,8 @@
 # This should be much easier to accomplish than
 # Good to Bad. I'm basically Dennis Ritchie now.
 
+import re
+
 def compile_val_copy(tokens,output):
     source = tokens[1]
     destination = tokens[2]
@@ -184,6 +186,15 @@ def compile_array_set_index(tokens,output):
     output.append("add regA 1 regA".format(index))
     output.append("mem_copy {} regA".format(source))
 
+def compile_jump(tokens,output):
+    location = tokens[1]
+    match = re.match("^s[0-9]+$",location)
+    if match is not None:
+        location = location.replace("s","")
+        output.append("load {} regA".format(location))
+        output.append("jump regA")
+    else:
+        output.append(" ".join(tokens))
 
 def compile_ugly_command(tokens,output,counter):
     command = tokens[0]
@@ -197,7 +208,7 @@ def compile_ugly_command(tokens,output,counter):
     elif command in arith:
         compile_arith(tokens,output)
     elif command == "jump":
-        output.append(" ".join(tokens))
+        compile_jump(tokens,output)
     elif command.startswith("jump"):
         # jump_if_0 and jump_if_n0
         compile_conditional_jump(tokens,output)
