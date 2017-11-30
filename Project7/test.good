@@ -1,5 +1,5 @@
-define val add(val x, val y){
-	return x + y;
-} 
+define val x(){
+	return 1;
+}
 
-add(1,2);
+print(x());

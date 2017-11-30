@@ -204,6 +204,24 @@ class NotNode(Node):
         output.append("#End NotNode")
         return var
 
+class NegateNode(Node):
+    """
+    NegateNode
+    """
+    def __init__(self,child):
+        super().__init__(name='NegateNode',children=[child])
+
+    def generate_bad_code(self,output):
+        tracker = Tracker()
+        output.append("#Start NegateNode")
+        child = self.children[0].generate_bad_code(output)
+        TypeEnforcer.error_if_is_not(child,TypeEnum.Val)
+        var = VariableFactory.maketempscalar("val",tracker.varnum)
+        output.append("sub 0 {} {}".format(child.data.value,var.data.value))
+        output.append("#End NegateNode")
+        return var
+
+
 class ComparisonNode(Node):
     """
     ComparisonNode : +-/*
@@ -541,19 +559,36 @@ class FunctionCallNode(Node):
     """
     def __init__(self,function,arguments):
         super().__init__(name="FunctionCallNode",children=[arguments])
-        self.function = function
+        self.function_name = function
+        self.function = None
 
     def generate_bad_code(self,output):
         tracker = Tracker()
+        self.function = tracker.functions.deref_variable(self.function_name)
         results = []
+        label = "function_call_{}".format(tracker.callnum)
         output.append("#Start {}".format(self.name))
         if len(self.function.arguments) != len(self.children[0]):
             raise Exception("Incorrect number of arguments for function")
-        for index,argument in enumerate(self.children[0]):
-            result = argument.generate_bad_code(output)
-            TypeEnforcer.error_if_not_equal(self.function.arguments[index],result)
+        for index,expression in enumerate(self.children[0]):
+            result = expression.generate_bad_code(output)
+            argument = self.function.arguments[index]
+            TypeEnforcer.error_if_not_equal(argument,result)
+            if TypeEnforcer.is_type(result,TypeEnum.Array):
+                output.append("ar_copy {} {}".format(result.data.value,argument.data.value))
+            else:
+                output.append("val_copy {} {}".format(result.data.value,argument.data.value))
+        output.append("val_copy {} {}".format(label,self.function.return_label.data.value))
+        output.append("jump {}".format(self.function.label))
+        output.append("{}:".format(label))
+        data = Data(self.function.type.template.format(tracker.varnum),self.function.type)
+        var = Variable(data.value,data)
+        if TypeEnforcer.is_type(self.function,TypeEnum.Array):
+            output.append("ar_copy {} {}".format(self.function.return_var.data.value,var.data.value))
+        else:
+            output.append("val_copy {} {}".format(self.function.return_var.data.value,var.data.value))
         output.append("#End {}".format(self.name))
-
+        return var
 
 class BreakNode(Node):
     """

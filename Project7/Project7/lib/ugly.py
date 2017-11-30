@@ -233,7 +233,7 @@ def compile_ugly_command(tokens,output,counter):
         output.append("# Failed to compile line command: {}".format(command))
 
 def compile_ugly_lines(lines):
-    output = ["store 100000 0"]
+    output = ["store 10000 0","val_copy 20000 regH"]
     counter = 0
     for line in lines:
         # Process ' ' properly

@@ -78,34 +78,41 @@ def p_funcdef_statement(p):
 
 def p_function_definition(p):
     """
-    funcdef : FUNCTION_DEFINE type ID  scopeupbro '(' parameters ')' statement
+    funcdef : in_function FUNCTION_DEFINE type ID  scopeupbro '(' parameters ')' statement
     """
     #class Function(name,_type,label,return_var,return_label,argument_vars):
     tracker = Tracker()
-    funcname = p[3]
-    functype = p[2]
-    parameters = p[6]
-    node = p[8]
+    funcname = p[4]
+    functype = p[3]
+    parameters = p[7]
+    node = p[9]
     function = Function(funcname,functype,parameters,node)
     tracker.functions.declare_variable(function)
     tracker.symbols.remove_scope()
+    tracker.in_function = False
     p[0] = None
+
+def p_in_function(p):
+    """
+    in_function : 
+    """
+    tracker = Tracker()
+    if tracker.in_function:
+        raise Exception("Cannot define a function in a function!")
+    tracker.in_function = True
 
 def p_function_call(p):
     """
     expression : ID '(' arguments ')'
     """
-    tracker = Tracker()
-    function = tracker.functions.deref_variable(p[1])
-
-    p[0] = FunctionCallNode(function,p[3])
+    p[0] = FunctionCallNode(p[1],p[3])
 
 def p_arguments_list(p):
     """
     arguments : argument ',' arguments
     """
     arguments = p[3]
-    arguments.append(p[1])
+    arguments.insert(0,p[1])
     p[0] = arguments
 
 def p_empty_arguments(p):

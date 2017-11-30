@@ -16,10 +16,11 @@ class Tracker:
             self.if_counter = 1
             self.while_counter = 1
             self.bool_counter = 1
-            self.function_counter = 1
+            self.call_counter = 1
             self.symbols = SymbolTable()
             self.break_tag_stack = []
             self._active_function = None
+            self._in_function = False
             self.functions = SymbolTable()
 
     instance = None
@@ -48,9 +49,9 @@ class Tracker:
         return self.varnum
 
     @property
-    def functionnum(self):
-        unique_number = Tracker.instance.function_counter 
-        Tracker.instance.function_counter += 1 
+    def callnum(self):
+        unique_number = Tracker.instance.call_counter 
+        Tracker.instance.call_counter += 1 
         return unique_number
 
     @property
@@ -115,4 +116,12 @@ class Tracker:
         #if not isinstance(function,Function):
         #    raise Exception("Active function must be of type Function!")
         Tracker.instance._active_function = function
+
+    @property
+    def in_function(self):
+        return Tracker.instance._in_function
+
+    @in_function.setter
+    def in_function(self,boolin):
+        Tracker.instance._in_function = boolin
 
