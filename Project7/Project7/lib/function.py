@@ -2,7 +2,15 @@
 
 from .variable import *
 from .typing import *
-from .node import Node,ReturnNode,UsageNode
+from .node import (
+        Node,
+        ReturnNode,
+        UsageNode,
+        ValLiteralNode,
+        StringLiteralNode,
+        CharLiteralNode,
+        ResizeMethodNode
+        )
 from .tracker import Tracker
 
 class Function():
@@ -18,32 +26,42 @@ class Function():
         self._name = name
         self._label = "function_{}_{}".format(name,tracker.varnum)
         self._type = _type
-        default_return_node = None
         self._nodes = [node]
         self._arguments = arguments
         var_name = self._type.template.format(tracker.varnum)
         self._return_var = Variable(var_name,Data(var_name,self._type))
         self._return_label = VariableFactory.maketempscalar("val",tracker.varnum)
         self.add_default_return()
+        #self._variables_to_save = [self._return_label] + self._arguments
+        self._variables_to_save = [self._return_label] + self._arguments
 
     def add_default_return(self):
         tracker = Tracker()
         temp = None
+        node = None
         if self._type.type == TypeEnum.Val:
             temp = VariableFactory.maketempscalar("val",tracker.varnum)
+            node = ValLiteralNode("0")
         elif self._type.type == TypeEnum.Char:
             temp = VariableFactory.maketempscalar("char",tracker.varnum)
+            node = CharLiteralNode("'0'")
         elif self._type.type == TypeEnum.Array:
             if self._type.subtype.type == TypeEnum.Val:
                 temp = VariableFactory.maketempmeta("array","val",tracker.varnum)
+                self._nodes.append(ResizeMethodNode(temp,ValLiteralNode("0")))
+                node = UsageNode(temp)
             elif self._type.subtype.type == TypeEnum.Char:
                 temp = VariableFactory.maketempmeta("array","char",tracker.varnum)
-        usage_node = UsageNode(temp)
-        self._nodes.append(ReturnNode(usage_node))
+                node = StringLiteralNode("\"\"")
+        self._nodes.append(ReturnNode(node))
 
     @property
     def name(self):
         return self._name
+
+    @property
+    def variables_to_save(self):
+        return self._variables_to_save
 
     @property
     def label(self):

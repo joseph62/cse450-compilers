@@ -1,5 +1,6 @@
-define val x(){
-	return 1;
+define val test(val x,char y,array(val) z,array(char) w) {
+	print(x,y,z,w);
 }
-
-print(x());
+array(val) z;
+z.resize(1);
+test(1,'c',z,"hello");

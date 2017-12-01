@@ -7,7 +7,6 @@ from .typecheck import TypeEnforcer
 from .typing import *
 from .variable import *
 from .data import *
-from .mode import CompilerMode
 
 class Node:
     """
@@ -185,6 +184,8 @@ class ArithmeticNode(Node):
                     )
                 )
         output.append("#End {}".format(self.name))
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return var
 
 class NotNode(Node):
@@ -202,6 +203,8 @@ class NotNode(Node):
         var = VariableFactory.maketempscalar("val",tracker.varnum)
         output.append("test_equ 0 {} {}".format(child.data.value,var.data.value))
         output.append("#End NotNode")
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return var
 
 class NegateNode(Node):
@@ -219,6 +222,8 @@ class NegateNode(Node):
         var = VariableFactory.maketempscalar("val",tracker.varnum)
         output.append("sub 0 {} {}".format(child.data.value,var.data.value))
         output.append("#End NegateNode")
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return var
 
 
@@ -264,6 +269,8 @@ class ComparisonNode(Node):
                 )
 
         output.append("#End {}".format(self.name))
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return var
 
 class RandomNode(Node):
@@ -280,6 +287,8 @@ class RandomNode(Node):
         var = VariableFactory.maketempscalar("val",tracker.varnum)
         output.append("random {} {}".format(child.data.value,var.data.value))
         output.append("#End RandomNode")
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return var
 
 class BooleanAndNode(Node):
@@ -302,6 +311,8 @@ class BooleanAndNode(Node):
         output.append("test_nequ 0 {} {}".format(child2.data.value,var.data.value))
         output.append("{}: # Jump Tag {}".format(jump_man,self.name))
         output.append("#End BooleanAndNode")
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return var
 
 class BooleanOrNode(Node):
@@ -324,6 +335,8 @@ class BooleanOrNode(Node):
         output.append("test_nequ 0 {} {}".format(child2.data.value,var.data.value))
         output.append("{}: # Jump Tag {}".format(jump_man,self.name))
         output.append("#End BooleanOrNode")
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return var
 
 class UsageNode(Node):
@@ -333,7 +346,11 @@ class UsageNode(Node):
     def __init__(self,data):
         super().__init__(name='UsageNode',data=data)
     def generate_bad_code(self,output):
+        tracker = Tracker()
         output.append("#{} for {}".format(self.name,self.data))
+        var = self.data
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return self.data
 
 class ArrayIndexNode(Node):
@@ -343,6 +360,7 @@ class ArrayIndexNode(Node):
     def __init__(self,data,child):
         super().__init__(name='ArrayIndexNode',data=data,children=[child])
     def generate_bad_code(self,output):
+        tracker = Tracker()
         temp_var_value = "s{}".format(Tracker().varnum)
         output.append("#Start {}".format(self.name))
         position = self.children[0].generate_bad_code(output)
@@ -359,6 +377,8 @@ class ArrayIndexNode(Node):
                     )
             )
         output.append("#End {}".format(self.name))
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return var
 
 class AssignmentNode(Node):
@@ -377,6 +397,9 @@ class AssignmentNode(Node):
         else:
             output.append("val_copy {} {}".format(child.data.value,self.data.data.value))
         output.append("#End Assignment")
+        var = self.data
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return self.data
 
 class SizeMethodNode(Node):
@@ -387,12 +410,16 @@ class SizeMethodNode(Node):
         super().__init__(name='SizeMethodNode',data=data)
 
     def generate_bad_code(self,output):
+        tracker = Tracker()
         output.append("#Start SizeMethod")
         var = self.data.generate_bad_code(output)
         TypeEnforcer.error_if_not_has_method(var,'size')
         result = VariableFactory.maketempscalar("val",Tracker().varnum)
         output.append("ar_get_size {} {}".format(var.data.value,result.data.value))
         output.append("#End SizeMethod")
+        var = result
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return result
 
 class ResizeMethodNode(Node):
@@ -403,6 +430,7 @@ class ResizeMethodNode(Node):
         super().__init__(name='ResizeMethodNode',data=data,children=[expression])
 
     def generate_bad_code(self,output):
+        tracker = Tracker()
         output.append("#Start ResizeMethod")
         var = self.data.generate_bad_code(output)
         TypeEnforcer.error_if_not_has_method(var,'resize')
@@ -411,6 +439,8 @@ class ResizeMethodNode(Node):
         output.append("ar_set_size {} {}".format(
             var.data.value,child.data.value))
         output.append("#End ResizeMethod")
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return var
 
 class ExpressionAssignmentNode(Node):
@@ -438,6 +468,9 @@ class ExpressionAssignmentNode(Node):
         else:
             output.append("val_copy {} {}".format(child2.data.value,child1.data.value)) 
         output.append("#End Expression Assignment")
+        var = child1
+        if tracker.in_function:
+            tracker.active_function.variables_to_save.append(var)
         return child1
 
 class BlockNode(Node):
@@ -570,6 +603,15 @@ class FunctionCallNode(Node):
         output.append("#Start {}".format(self.name))
         if len(self.function.arguments) != len(self.children[0]):
             raise Exception("Incorrect number of arguments for function")
+
+        if tracker.in_function:
+            active_function = tracker.active_function
+            for variable in active_function.arguments:
+                if TypeEnforcer.is_type(variable,TypeEnum.Array):
+                    output.append("ar_push {}".format(variable.value))
+                else:
+                    output.append("push {}".format(variable.value))
+
         for index,expression in enumerate(self.children[0]):
             result = expression.generate_bad_code(output)
             argument = self.function.arguments[index]
@@ -578,9 +620,36 @@ class FunctionCallNode(Node):
                 output.append("ar_copy {} {}".format(result.data.value,argument.data.value))
             else:
                 output.append("val_copy {} {}".format(result.data.value,argument.data.value))
-        output.append("val_copy {} {}".format(label,self.function.return_label.data.value))
+
+        if tracker.in_function:
+            active_function = tracker.active_function
+            for variable in active_function.variables_to_save:
+                if TypeEnforcer.is_type(variable,TypeEnum.Array):
+                    output.append("ar_push {}".format(variable.value))
+                else:
+                    output.append("push {}".format(variable.value))
+
+        output.append("val_copy {} {}".format(label,self.function.return_label.data.value)) 
         output.append("jump {}".format(self.function.label))
         output.append("{}:".format(label))
+
+        if tracker.in_function:
+            active_function = tracker.active_function
+            for variable in reversed(active_function.variables_to_save):
+                if TypeEnforcer.is_type(variable,TypeEnum.Array):
+                    output.append("ar_pop {}".format(variable.value))
+                else:
+                    output.append("pop {}".format(variable.value))
+
+        if tracker.in_function:
+            active_function = tracker.active_function
+            for variable in reversed(active_function.arguments):
+                if TypeEnforcer.is_type(variable,TypeEnum.Array):
+                    output.append("ar_pop {}".format(variable.value))
+                else:
+                    output.append("pop {}".format(variable.value))
+
+
         data = Data(self.function.type.template.format(tracker.varnum),self.function.type)
         var = Variable(data.value,data)
         if TypeEnforcer.is_type(self.function,TypeEnum.Array):
@@ -588,6 +657,8 @@ class FunctionCallNode(Node):
         else:
             output.append("val_copy {} {}".format(self.function.return_var.data.value,var.data.value))
         output.append("#End {}".format(self.name))
+        #if tracker.in_function:
+        #    tracker.active_function.variables_to_save.append(var)
         return var
 
 class BreakNode(Node):

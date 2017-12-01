@@ -196,6 +196,16 @@ def compile_jump(tokens,output):
     else:
         output.append(" ".join(tokens))
 
+def compile_pop(tokens,output):
+    location = tokens[1].replace("s","").replace("a","")
+    output.append("mem_copy regH {}".format(location))
+    output.append("sub regH 1 regH")
+
+def compile_push(tokens,output):
+    location = tokens[1].replace("s","").replace("a","")
+    output.append("add regH 1 regH")
+    output.append("mem_copy {} regH".format(location))
+
 def compile_ugly_command(tokens,output,counter):
     command = tokens[0]
     arith = ["add","sub","mult","div","test_gtr",
@@ -227,13 +237,17 @@ def compile_ugly_command(tokens,output,counter):
         compile_array_set_index(tokens,output)
     elif command == "ar_get_idx":
         compile_array_get_index(tokens,output)
+    elif "push" in command:
+        compile_push(tokens,output)
+    elif "pop" in command:
+        compile_pop(tokens,output)
     elif command == "":
         output.append("# Empty line")
     else:
         output.append("# Failed to compile line command: {}".format(command))
 
 def compile_ugly_lines(lines):
-    output = ["store 10000 0","val_copy 20000 regH"]
+    output = ["val_copy 10000 regH","store 20000 0"]
     counter = 0
     for line in lines:
         # Process ' ' properly

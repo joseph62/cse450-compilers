@@ -29,6 +29,10 @@ class Variable:
         return self._data.type
 
     @property
+    def value(self):
+        return self._data.value
+
+    @property
     def data(self):
         return self._data
 

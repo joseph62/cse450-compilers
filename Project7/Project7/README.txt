@@ -2,13 +2,11 @@ Name:
 Sean Joseph
 
 Resources:
-The slides on compiling bad commands into ugly code. Thanks Josh!
+Lectures and slides from class
 
 Comments:
-Most of this assignment was easy to accomplish. Converting most of the 
-bad instructions to ugly only required an extra line or two. I had an
-extremely difficult time trying to get ar_copy and ar_set_size to work
-the way I wanted them to. The debug mode for the ugly interpreter was
-extremely useful when debugging my output ugly code. Even with the 
-wonderful debug mode, I ended up spending the majority of my time on 
-this project debugging my poor ugly code.
+I spent probably equal amounts of time implementing functionality
+and refactoring my compiler to add some python OO flair.
+This one was fairly difficult. I did spend too much time on any
+one part. I was not able to get the hidden Multiple Parameters 
+test to pass so that's a bummer. I'm sure I'll get good one day.
